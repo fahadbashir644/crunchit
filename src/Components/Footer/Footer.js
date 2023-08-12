@@ -20,25 +20,25 @@ function Footer() {
             <section className="mb-1">
                 <a
                 className="btn btn-outline-light rounded-circle btn-floating m-1"
-                href="#!"
+                href="#"
                 role="button"
                 ><FaFacebook></FaFacebook>
                 </a>
                 <a
                 className="btn btn-outline-light rounded-circle btn-floating m-1"
-                href="#!"
+                href="#"
                 role="button"
                 ><FaTwitter></FaTwitter>
                 </a>
                 <a
                 className="btn btn-outline-light rounded-circle btn-floating m-1"
-                href="#!"
+                href="#"
                 role="button"
                 ><FaGoogle></FaGoogle>
                 </a>
                 <a
                 className="btn btn-outline-light rounded-circle btn-floating m-1"
-                href="#!"
+                href="#"
                 role="button"
                 ><FaInstagram></FaInstagram>
                 </a>
