@@ -3,6 +3,7 @@ import Services from '../Services/Services';
 import './Main.css';
 import viImg from "../../Assets/vi.jpg";
 import viImg2 from "../../Assets/vi2.jpg";
+import {Link} from 'react-router-dom';
 
 function Main() {
   return (
@@ -18,7 +19,7 @@ function Main() {
                             <p className="mb-2 lead">Your one stop to both Human & AI virtual assistant
                              with ease and a fraction of the industry's price.</p>
                              <p className="mb-6 lead">$2.99/hr availability. 4X cheaper and better than industry standard.</p>
-                            <a className="btn btn-primary">Hire Now</a>
+                            <Link to='/hirenow' className="btn btn-primary">Hire Now</Link>
                         </div>
                     </div>
                     <div className="col-xl-5 offset-xl-2 col-md-5 offset-md-1 col-lg-5 offset-lg-1  col-12">
@@ -71,7 +72,7 @@ function Main() {
                                 you make them into your own expert with our optional orientation program you can
                                 add to any of your orders for free
                             </p>
-                            <a className="mt-4 btn btn-primary">Try Now</a>
+                            <Link to='/hirenow' className="mt-4 btn btn-primary">Try Now</Link>
                         </div>
                     </div>
                 </div>
@@ -101,7 +102,7 @@ function Main() {
                             <p className="mb-0"> ntegrate our service to your platform seamlessly and to much of your control. Click
                             the contact button below and a member of our team will reach out to you
                             </p>
-                            <a className="btn btn-primary mt-4">Contact Us</a>
+                            <Link to='/contact' className="mt-4 btn btn-primary">Contact Us</Link>
                         </div>
                     </div>
                 </div>

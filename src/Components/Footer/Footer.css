@@ -1,4 +1,10 @@
-.menu a {
+.menu {
+display: flex;
+flex-direction: row;
+justify-content: center;
+}
+
+.footer-tags {
     color: rgba(255, 255, 255, 0.6);
     margin: 0 10px;
     text-transform: uppercase;
@@ -6,7 +12,7 @@
     text-decoration: none;
 }
 
-.menu a:hover{
+.footer-tags:hover{
     color: white;
 }
 
@@ -26,3 +32,10 @@
     justify-content: center !important; 
 }
   
+.bottom-centered-div {
+    position: absolute;
+    bottom: 0; /* Position at the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust horizontally to center */
+    /* Other styles for your bottom-centered div */
+  }
