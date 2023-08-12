@@ -13,10 +13,10 @@ const HireNow = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedService, setSelectedService] = useState('');
     const [customService, setCustomService] = useState('');
-    const [selectedHours, setSelectedHours] = useState([]);
-    const [isOrientationRequired, setIsOrientationRequired] = useState(false);
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
-    const [email, setEmail] = useState('');
+    // const [selectedHours, setSelectedHours] = useState([]);
+    // const [isOrientationRequired, setIsOrientationRequired] = useState(false);
+    // const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
+    // const [email, setEmail] = useState('');
 
     const handleNext = () => {
         setCurrentPage(currentPage + 1);
