@@ -1,15 +1,22 @@
 import './App.css';
 import Footer from './Components/Footer/Footer';
 import Header from './Components/Header/Header';
+import HireNow from './Components/HireNow/HireNow';
 import Main from './Components/Main/Main';
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
   return (
-    <div>
-      <Header></Header>
-      <Main></Main>
-      <Footer></Footer>
-    </div>
+    <BrowserRouter>
+      <div className="app-container">
+        <Header />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/hirenow" element={<HireNow />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
