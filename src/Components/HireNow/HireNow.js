@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SchedulePage from './Schedule/Schedule';
 
 const HireNow = () => {
     const servicesList = [
@@ -38,44 +39,47 @@ const HireNow = () => {
         switch (currentPage) {
         case 1:
             return (
-            <div>
-                <h2>Service</h2>
+            <div className='container mt-5'>
                 <form>
-                    <label>
-                    Service:
-                    <select value={selectedService} onChange={handleServiceChange}>
+                    <div className="form-group">
+                        <label htmlFor="serviceSelect">Service:</label>
+                        <select
+                        className="form-control"
+                        id="serviceSelect"
+                        value={selectedService}
+                        style={{width: "50%"}}
+                        onChange={handleServiceChange}
+                        >
                         <option value="">Select...</option>
                         {servicesList.map((service, index) => (
-                        <option key={index} value={service}>
+                            <option key={index} value={service}>
                             {service}
-                        </option>
+                            </option>
                         ))}
                         <option value="Other">Other</option>
-                    </select>
-                    </label>
+                        </select>
+                    </div>
                     {selectedService === 'Other' && (
-                    <label>
-                        Custom Service:
+                        <div className="mt-4 form-group">
+                        <label htmlFor="customServiceInput">Custom Service:</label>
                         <input
-                        type="text"
-                        value={customService}
-                        onChange={handleCustomServiceChange}
+                            type="text"
+                            className="form-control"
+                            id="customServiceInput"
+                            value={customService}
+                            style={{width: "50%"}}
+                            onChange={handleCustomServiceChange}
                         />
-                    </label>
+                        </div>
                     )}
                 </form>
-                <button onClick={handleNext}>Next</button>
+                <button className="mt-4 btn btn-primary" onClick={handleNext}>Next</button>
             </div>
             );
         case 2:
             return (
             <div>
-                <h2>Schedule</h2>
-                {/* Working hours selection */}
-                {/* Orientation required */}
-                {/* Select time frame */}
-                <button onClick={handleNext}>Next</button>
-                <button onClick={handleBack}>Back</button>
+                <SchedulePage onNext={handleNext} onBack={handleBack}/>
             </div>
             );
         case 3:
@@ -119,7 +123,6 @@ const HireNow = () => {
 
     return (
         <div style={{minHeight: '60vh'}}>
-        <h1>HIRE NOW WIZARD</h1>
         {renderPage()}
         </div>
     );
