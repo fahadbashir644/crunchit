@@ -30,7 +30,7 @@ const SummaryPage = () => {
   return (
     <div className="summary-container">
       <h2 className='cstm-h2'>Summary</h2>
-      <p>Selected Service: {selectedService == 'Other' ? customService : selectedService}</p>
+      <p>Selected Service: {selectedService === 'Other' ? customService : selectedService}</p>
       <p>Working Hours: {totalHours}</p>
       <p>Total Price: ${totalPrice}</p>
 
