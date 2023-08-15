@@ -36,7 +36,7 @@
 
 /* Styling for container */
 .cstm-container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -91,4 +91,9 @@ thead th {
 /* Styling for the form buttons */
 .d-flex {
   margin-top: 20px;
+}
+
+.cstm-row-flex {
+  display: flex;
+  justify-content: space-between;
 }

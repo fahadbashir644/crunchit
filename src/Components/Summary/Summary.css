@@ -1,0 +1,10 @@
+.summary-container {
+    padding: 20px;
+    margin: 20px;
+    background-color: #0a0a0a;
+  }
+  .cstm-h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ccc;
+}

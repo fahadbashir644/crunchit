@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Schedule.css';
+import { useHireContext } from '../../App.js';
+import {Link} from 'react-router-dom';
 
 const SchedulePage = ({ onNext, onBack }) => {
-    const [workingHours, setWorkingHours] = useState(new Map());
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isOrientationRequired, setIsOrientationRequired] = useState(false);
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
+  //   const [workingHours, setWorkingHours] = useState(new Map());
+  // const [selectedDate, setSelectedDate] = useState(new Date());
+  // const [isOrientationRequired, setIsOrientationRequired] = useState(false);
+  // const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
+
+  const {
+    customService,
+    workingHours,
+    setWorkingHours,
+    selectedDate,
+    setSelectedDate,
+    isOrientationRequired,
+    setIsOrientationRequired,
+    selectedTimeFrame,
+    setSelectedTimeFrame,
+    totalPrice,
+    setTotalPrice
+    // Other states and functions
+  } = useHireContext();
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -25,17 +42,27 @@ const SchedulePage = ({ onNext, onBack }) => {
     let currentDate = addDaysToDate(selectedDate,day);
     currentDate = formatDate(currentDate);
     let hour = Number(event.currentTarget.closest('tr').id);
+    let price = totalPrice;
     if (updatedWorkingHours.has(currentDate)) {
-      const hours = updatedWorkingHours.get(currentDate);
+      let hours = updatedWorkingHours.get(currentDate);
       if (!hours.includes(hour)) {
+        price = price + 0.5;
+        setTotalPrice(price);
         hours.push(hour);
       } else {
         const index = hours.indexOf(hour);
         if (index > -1) {
+          price = price - 0.5;
+          setTotalPrice(price);
           hours.splice(index, 1);
+          if (!hours || hours.length === 0) {
+            updatedWorkingHours.delete(currentDate);
+          }
         }
       }
     } else {
+      price = price + 0.5;
+      setTotalPrice(price);
       updatedWorkingHours.set(currentDate, [hour]);
     }
     setWorkingHours(updatedWorkingHours);
@@ -77,7 +104,7 @@ const SchedulePage = ({ onNext, onBack }) => {
     });
 
     return dates.map((date) => (
-      <th key={date.toISOString()}>{date.toDateString()}</th>
+      <th key={date.toISOString()} style={{width: '120px'}}>{date.toDateString()}</th>
     ));
   };
 
@@ -95,9 +122,14 @@ const SchedulePage = ({ onNext, onBack }) => {
     <div className="cstm-container mt-5">
       <h2 className='cstm-h2'>Schedule</h2>
       <form>
-      <div className="cstm-form-group">
+      <div className="cstm-form-group cstm-row-flex">
+        <div>
           <label>Select Date:</label>
           <DatePicker selected={selectedDate} onChange={handleDateChange} />
+        </div>
+        <div>
+          <label>Total Price: ${totalPrice}</label>
+        </div>
         </div>
         <div className="cstm-form-group">
           <label>Working Hours:</label>
@@ -182,13 +214,10 @@ const SchedulePage = ({ onNext, onBack }) => {
             </div>
           </div>
         )}
-        <div className="d-flex justify-content-between mt-6">
-          <button className="btn btn-secondary" onClick={onBack}>
-            Back
-          </button>
-          <button className="btn btn-primary" onClick={onNext}>
-            Next
-          </button>
+        <div className="d-flex justify-content-center mt-6">
+          <Link to='/select' className="btn btn-secondary">Back</Link>
+          {customService && <Link to='/summary' className="btn">Skip</Link>}
+          <Link to='/summary' className="btn btn-primary">Next</Link>
         </div>
       </form>
     </div>

@@ -16,7 +16,7 @@ function Header() {
                     <Link to='/' className="nav-link">Home</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to='/hirenow' className="nav-link">Hire</Link>
+                    <Link to='/select' className="nav-link">Hire</Link>
                 </li>
                 <li className="nav-item">
                     <Link to='/buy' className="nav-link">Buy CrunchCard</Link>
