@@ -24,7 +24,7 @@ const PaymentPage = () => {
 
         var config = {
         method: "post",
-        url: "http://api.nowpayments.io/v1/invoice",
+        url: "https://api.nowpayments.io/v1/invoice",
         headers: {
             "x-api-key": "535HF7P-YHW4KWY-NC8VTAW-931RC7Q",
             "Content-Type": "application/json",
