@@ -19,7 +19,7 @@ function Main() {
                             <p className="mb-2 lead">Your one stop to both Human & AI virtual assistant
                              with ease and a fraction of the industry's price.</p>
                              <p className="mb-6 lead">$2.99/hr availability. 4X cheaper and better than industry standard.</p>
-                            <Link to='/hirenow' className="btn btn-primary">Hire Now</Link>
+                            <Link to='/select' className="btn btn-primary">Hire Now</Link>
                         </div>
                     </div>
                     <div className="col-xl-5 offset-xl-2 col-md-5 offset-md-1 col-lg-5 offset-lg-1  col-12">
@@ -72,7 +72,7 @@ function Main() {
                                 you make them into your own expert with our optional orientation program you can
                                 add to any of your orders for free
                             </p>
-                            <Link to='/hirenow' className="mt-4 btn btn-primary">Try Now</Link>
+                            <Link to='/select' className="mt-4 btn btn-primary">Try Now</Link>
                         </div>
                     </div>
                 </div>

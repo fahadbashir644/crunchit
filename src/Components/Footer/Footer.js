@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
 
 function Footer() {
   return (
-    <footer className="text-center text-white">
+    <footer className="text-center text-white mt-6" style={{borderTop: '1px solid #171717'}}>
         <div className="container p-4 pb-0">
             <div className="row justify-content-center">
             <p className="menu">
