@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import './Thanks-Enquiry.css';
 import {Link} from 'react-router-dom';
+import { useHireContext } from '../../App.js';
 
 const ThanksEnquiryPage = () => {
     const [email, setEmail] = useState('');
-
+    const {customService} = useHireContext();
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
     };
@@ -16,7 +17,7 @@ const ThanksEnquiryPage = () => {
               <input
                   type="email"
                   className="form-control"
-                  id="emailInput"
+                  id="emailInput2"
                   value={email}
                   style={{width: "50%"}}
                   onChange={handleEmailChange}
@@ -25,7 +26,7 @@ const ThanksEnquiryPage = () => {
                 request within the hour</p>
         </div>
         <div className="d-flex justify-content-center mt-6">
-          <Link to='/payment' className="btn btn-secondary">Back</Link>
+          <Link to={customService ? '/schedule' : '/payment'} className="btn btn-secondary">Back</Link>
           <Link to='/purchase' className="btn btn-primary">Next</Link>
         </div>
     </div>

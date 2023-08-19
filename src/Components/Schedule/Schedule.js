@@ -6,10 +6,6 @@ import { useHireContext } from '../../App.js';
 import {Link} from 'react-router-dom';
 
 const SchedulePage = ({ onNext, onBack }) => {
-  //   const [workingHours, setWorkingHours] = useState(new Map());
-  // const [selectedDate, setSelectedDate] = useState(new Date());
-  // const [isOrientationRequired, setIsOrientationRequired] = useState(false);
-  // const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
 
   const {
     customService,
@@ -216,8 +212,8 @@ const SchedulePage = ({ onNext, onBack }) => {
         )}
         <div className="d-flex justify-content-center mt-6">
           <Link to='/select' className="btn btn-secondary">Back</Link>
-          {customService && <Link to='/summary' className="btn">Skip</Link>}
-          <Link to='/summary' className="btn btn-primary">Next</Link>
+          {customService && <Link to='/enquiry' className="btn">Skip</Link>}
+          <Link to={customService ? '/enquiry' : '/summary'} className="btn btn-primary">Next</Link>
         </div>
       </form>
     </div>
