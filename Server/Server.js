@@ -12,11 +12,11 @@ const path = require('path');
 
 
 // Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, '..','build')));
 
 // Handle all other requests by serving the frontend's index.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "public/index.html"));
+  res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
 });
 
 
