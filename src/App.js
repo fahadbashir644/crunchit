@@ -10,6 +10,9 @@ import SummaryPage from './Components/Summary/Summary';
 import PaymentPage from './Components/Payment/Payment';
 import ThanksEnquiryPage from './Components/Thanks-Enquiry/Thanks-Enquiry';
 import ThanksPurchasePage from './Components/Thanks-Purchase/Thanks-Purchase';
+import LoginPage from './Components/Login/Login';
+import SignupPage from './Components/Signup/Signup';
+import { AuthProvider } from './Components/Auth/Auth';
 
 const HireContext = createContext();
 
@@ -25,6 +28,7 @@ function App() {
     const [isOrientationRequired, setIsOrientationRequired] = useState(false);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
+    const [balance, setBalance] = useState(0);
 
     const contextValue = {
         selectedService,
@@ -40,17 +44,21 @@ function App() {
         selectedTimeFrame,
         setSelectedTimeFrame,
         totalPrice,
-        setTotalPrice
+        setTotalPrice,
+        balance,
+        setBalance
     };
 
   return (
     <BrowserRouter>
-      
+      <AuthProvider>
       <div className="app-container">
         <Header />
         <HireContext.Provider value={contextValue}>
             <Routes>
               <Route path="/" element={<Main />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
               <Route path="/select" element={<ServiceForm />} />
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/summary" element={<SummaryPage />} />
@@ -61,6 +69,7 @@ function App() {
         </HireContext.Provider>
         <Footer />
       </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

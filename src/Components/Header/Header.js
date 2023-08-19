@@ -1,7 +1,14 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import { useAuth } from '../Auth/Auth';
 
 function Header() {
+    const {isLoggedIn, setIsLoggedIn} = useAuth();
+    const handleLogout = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        setIsLoggedIn(false);
+    }
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark bg-opacity-75 sticky-md-top ">
     <div className="container">
@@ -21,9 +28,21 @@ function Header() {
                 <li className="nav-item">
                     <Link to='/buy' className="nav-link">Buy CrunchCard</Link>
                 </li>
-                <li className="nav-item">
-                    <Link to='/contact' className="nav-link">Contact Us</Link>
-                </li>
+                {!isLoggedIn ? (
+                    <>
+                    <li className="nav-item">
+                    <Link to='/login' className="btn btn-primary mr-2">Login</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to='/signup' className="btn btn-secondary">Signup</Link>
+                    </li>
+                    </>
+                ) : (
+                    <li className="nav-item">
+                        <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
+                    </li>
+                )}
+                
             </ul>
 
         </div>
