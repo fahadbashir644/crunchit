@@ -14,3 +14,9 @@
   input {
     width: 50%;
   }
+
+  .d-flex-cstm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }

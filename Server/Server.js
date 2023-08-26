@@ -11,6 +11,41 @@ const User = require("./Models/User");
 const path = require('path');
 const crypto = require("crypto");
 const axios = require('axios');
+const http = require('http').Server(app);
+const Message = require("./Models/Message");
+
+const socketIO = require('socket.io')(http, {
+  cors: {
+      origin: "http://localhost:3000"
+  }
+});
+
+socketIO.on('connection', (socket) => {
+  console.log(`⚡: ${socket.id} user just connected!`);
+
+  socket.on('message', (data) => {
+    const { sender, receiver, text } = data;
+    const newMessage = new Message({ sender, receiver, text });
+    newMessage.save();
+    socketIO.emit('privateMessage', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('🔥: A user disconnected');
+  });
+});
+
+// app.post('/messages', async (req, res) => {
+//   try {
+//     const { sender, receiver, text } = req.body;
+//     const newMessage = new Message({ sender, receiver, text });
+//     await newMessage.save();
+//     res.status(201).json(newMessage);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to save message' });
+//   }
+// });
+
 
 // Serve static files from the frontend build directory
 //app.use(express.static(path.join(__dirname, '..','build')));
@@ -81,6 +116,7 @@ app.post("/signup", (req, res) => {
                 _id: new Types.ObjectId(),
                 email: req.body.data.email,
                 password: req.body.data.password,
+                isVa: req.body.data.isVa,
                 balance: 0
             });
             user.save()
@@ -95,7 +131,7 @@ app.post("/signup", (req, res) => {
     }).catch((error) => {
       console.error('err2', error);
         res.status(400).send(error);
-    });;
+    });
 });
 
 app.post("/ipn", (req, res) => {
@@ -106,16 +142,17 @@ app.post("/ipn", (req, res) => {
     req.body.payment_status === "finished" &&
     signature === req.headers["x-nowpayments-sig"]
   ) {
+    let email = req.body.order_description;
     User.findOne({
-      email: req.body.email,
+      email: email,
     }).then((res2) => {
       if (res2) {
         User.findOneAndUpdate(
-          { email: req.body.email },
+          { email: email },
           { balance: Number(req.body.payment_amount) + Number(res2.balance) }
         ).then((result) => {
           console.log("updated");
-        });
+        })
       }
     });
   }
@@ -153,5 +190,38 @@ app.post("/getbalance", (req, res) => {
   });
 });
 
+app.post("/pay", (req, res) => {
+  User.findOne({
+    email: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      User.findOneAndUpdate(
+        { email: req.body.email },
+        { balance: Number(res2.balance) - Number(req.body.price) }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
+// Retrieve messages for a specific chat
+app.post('/getMessages', async (req, res) => {
+  try {
+    const { sender, receiver } = req.body;
+    const messages = await Message.find({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender },
+      ],
+    }).sort({ timestamp: 1 });
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve messages' });
+  }
+});
+
 const PORT = 8000;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+http.listen(PORT, () => console.log(`Listening on port ${PORT}`));

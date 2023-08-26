@@ -27,15 +27,19 @@ const ChatWindow = ({ selectedUser, socket }) => {
   }, [selectedUser]);
 
   useEffect(() => {
+    console.log('out');
     if (selectedUser) {
-      socket.on('message', newMessage => {
+      console.log('asd');
+      socket.on('privateMessage', newMessage => {
+        console.log(newMessage.sender);
+        console.log(selectedUser.email);
         if (newMessage.sender === selectedUser.email) {
           // Update chat history only if the message is from the selected user
           setChatMessages([...chatMessages, newMessage]);
         }
       });
     }
-  }, [socket, chatMessages]);
+  }, [chatMessages]);
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {

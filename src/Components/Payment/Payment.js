@@ -4,14 +4,23 @@ import {Link} from 'react-router-dom';
 import { useHireContext } from '../../App.js';
 import { useAuth } from '../Auth/Auth';
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
     const [password, setPassword] = useState('');
     const {isLoggedIn, setIsLoggedIn} = useAuth();
+    const navigate = useNavigate();
     const {balance, 
       setBalance,
       email,
-      setEmail
+      setEmail,
+      totalPrice,
+      setWorkingHours,
+      setSelectedService,
+      setCustomService,
+      setTotalPrice,
      } = useHireContext();
 
     useEffect(() => {
@@ -36,7 +45,26 @@ const PaymentPage = () => {
     };
 
     const handlePayClick = () => {
-        
+        if (totalPrice <= balance) {
+          const data = {
+            email: email,
+            price: totalPrice
+          };
+          axios.post("http://localhost:8000/pay", data).then((res) => {   
+            if (res) {
+                toast.success('Payment Successful');
+                setTotalPrice(0);
+                setWorkingHours(new Map());
+                setSelectedService('');
+                setCustomService('');
+                navigate('/enquiry');
+            } else {
+              toast.error('Payment failed');
+            }
+          });
+        } else {
+          toast.error('You do not have enough balance');
+        }
     };
   return (
     <div className="summary-container">

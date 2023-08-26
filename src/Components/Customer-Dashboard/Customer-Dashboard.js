@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../Auth/Auth';
+import io from 'socket.io-client';
 
 const CustomerDashboard = () => {
     const [topup, setTopup] = useState(0);
@@ -17,12 +18,22 @@ const CustomerDashboard = () => {
            setBalance,
            email
           } = useHireContext();
-  const [users] = useState([
-    { id: 1, name: 'VA 1' },
-    { id: 2, name: 'VA 2' },
-    { id: 3, name: 'VA 3' },
-    // Add more users as needed
-  ]);
+    const [users] = useState([
+      { id: 1, name: 'VA 1' , email: 'va1@gmail.com'},
+      { id: 2, name: 'VA 2', email: 'VA-2' },
+      { id: 3, name: 'VA 3', email: 'VA-3' },
+      // Add more users as needed
+    ]);
+    const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:8000');
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -53,7 +64,7 @@ const CustomerDashboard = () => {
         data : JSON.stringify({
             price_amount: topup,
             price_currency: "usd",
-            email: email,
+            order_description: email,
             ipn_callback_url: "https://nowpayments.io",
             success_url: "https://nowpayments.io",
             cancel_url: "https://nowpayments.io"
@@ -97,23 +108,22 @@ const CustomerDashboard = () => {
             </div>
             </div>
             <div className="row mt-8 va-chat p-4">
-                <h4 style={{color: "rgb(114 114 114)"}}>Your subscribed VAs</h4>
-              <div className="col-md-3">
-                <VAList users={users} handleUserClick={handleUserClick} />
-              </div>
-              <div className="col-md-9">
-                <div className="chat-container">
-                  {selectedUserId ? (
-                    <ChatWindow
-                      selectedUser={users.find(user => user.id === selectedUserId)}
-                      messages={messages}
-                    />
-                  ) : (
-                    <p>Select a user to start chatting</p>
-                  )}
-                </div>
+            <div className="col-md-3">
+              <VAList users={users} handleUserClick={handleUserClick} />
+            </div>
+            <div className="col-md-9">
+              <div className="chat-container">
+                {selectedUserId ? (
+                  <ChatWindow
+                    selectedUser={users.find((user) => user.id === selectedUserId)}
+                    socket={socket}
+                  />
+                ) : (
+                  <p>Select a user to start chatting</p>
+                )}
               </div>
             </div>
+          </div>
           </div>
         </div>
   );

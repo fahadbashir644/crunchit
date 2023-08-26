@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -26,6 +26,8 @@ const LoginPage = () => {
     })
     .then((response) => {
       setIsLoggedIn(true);
+      setIsVa(response.data.user.isVa);
+      console.log(response.data.user);
       sessionStorage.setItem('email', response.data.user.email);
       sessionStorage.setItem('token', response.data.token);
       setBalance(response.data.user.balance)

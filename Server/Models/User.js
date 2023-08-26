@@ -5,6 +5,7 @@ const UserSchema = Schema({
   email: { type: String, require: true },
   password: { type: String, require: true },
   balance: { type: Number, default: 0 },
+  isVa: { type: Boolean, default: false },
 });
 
 module.exports = model("User", UserSchema);

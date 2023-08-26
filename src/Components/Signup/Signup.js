@@ -7,15 +7,17 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
+  const [isVa, setIsVa] = useState(false);
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const handleSignup = () => {
       axios
-      .post("http://137.184.81.218/signup", {
+      .post("http://localhost:8000/signup", {
         header: { "Content-Type": "application/json" },
         data: {
           email: email,
           password: password,
+          isVa: isVa
         },
       })
       .then((response) => {
@@ -23,6 +25,10 @@ const SignupPage = () => {
       }).catch((error) => {
         toast.error("Email already registered");
       });;
+  };
+
+  const handleCheckboxChange = (event) => {
+    setIsVa(event.target.checked);
   };
 
   return (
@@ -50,6 +56,17 @@ const SignupPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
+        <div className='d-flex-cstm mb-3'>
+          <label className='mt-1' style={{ display: 'flex', alignItems: 'center' }}>
+            <span>is VA:</span>
+            <input
+              type="checkbox"
+              style={{ marginLeft: '-50px' }}
+              checked={isVa}
+              onChange={handleCheckboxChange}
+            />
+          </label>
         </div>
         <button type="button" className="btn btn-primary" onClick={handleSignup}>
           Signup
