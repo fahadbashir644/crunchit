@@ -31,7 +31,7 @@ function App() {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [balance, setBalance] = useState(0);
-    const [isVa, setIsVa] = useState(false);
+    const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
 
     const contextValue = {

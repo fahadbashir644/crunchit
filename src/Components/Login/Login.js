@@ -16,6 +16,11 @@ const LoginPage = () => {
   } = useAuth();
 
   const handleLogin = () => {
+    if (!email || !password) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+ 
     axios
     .post("http://localhost:8000/login", {
       header: { "Content-Type": "application/json" },
@@ -27,8 +32,8 @@ const LoginPage = () => {
     .then((response) => {
       setIsLoggedIn(true);
       setIsVa(response.data.user.isVa);
-      console.log(response.data.user);
       sessionStorage.setItem('email', response.data.user.email);
+      sessionStorage.setItem('isVa', response.data.user.isVa);
       sessionStorage.setItem('token', response.data.token);
       setBalance(response.data.user.balance)
       navigate('/');

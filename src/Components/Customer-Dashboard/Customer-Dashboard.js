@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import VAList from './VA-List';
-import ChatWindow from './Chat-Window';
+import UserList from '../User-List/User-List';
+import ChatWindow from '../Chat-Window/Chat-Window';
 import './Customer-Dashboard.css';
 import { useHireContext } from '../../App.js';
 import axios from "axios";
@@ -12,19 +12,24 @@ import io from 'socket.io-client';
 const CustomerDashboard = () => {
     const [topup, setTopup] = useState(0);
     const [selectedUserId, setSelectedUserId] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const {isLoggedIn, setIsLoggedIn} = useAuth();
+    const {isLoggedIn} = useAuth();
     const {balance, 
            setBalance,
            email
           } = useHireContext();
-    const [users] = useState([
-      { id: 1, name: 'VA 1' , email: 'va1@gmail.com'},
-      { id: 2, name: 'VA 2', email: 'VA-2' },
-      { id: 3, name: 'VA 3', email: 'VA-3' },
-      // Add more users as needed
-    ]);
+    const [users, setUsers] = useState([]);
     const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+      const data = {
+        isVa: true,
+      };
+      axios.post("http://localhost:8000/getUsers", data).then((res) => {   
+        if (res) {
+            setUsers(res.data.users);
+        } 
+      });
+    }, []);
 
   useEffect(() => {
     const newSocket = io('http://localhost:8000');
@@ -54,8 +59,6 @@ const CustomerDashboard = () => {
 
   const handleUserClick = (userId) => {
     setSelectedUserId(userId);
-    // Fetch messages for the selected user from the backend or state
-    // and update the "messages" state
   };
 
   const handleTopUp = () => {
@@ -109,13 +112,13 @@ const CustomerDashboard = () => {
             </div>
             <div className="row mt-8 va-chat p-4">
             <div className="col-md-3">
-              <VAList users={users} handleUserClick={handleUserClick} />
+              <UserList users={users} handleUserClick={handleUserClick} />
             </div>
             <div className="col-md-9">
               <div className="chat-container">
                 {selectedUserId ? (
                   <ChatWindow
-                    selectedUser={users.find((user) => user.id === selectedUserId)}
+                    selectedUser={users.find((user) => user._id === selectedUserId)}
                     socket={socket}
                   />
                 ) : (

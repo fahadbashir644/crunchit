@@ -7,16 +7,23 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [isVa, setIsVa] = useState(false);
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
   const handleSignup = () => {
+    if (!name || !email || !password) {
+      toast.error("Please fill in all required fields");
+      return;
+    } 
       axios
       .post("http://localhost:8000/signup", {
         header: { "Content-Type": "application/json" },
         data: {
           email: email,
           password: password,
+          name: name,
           isVa: isVa
         },
       })
@@ -35,6 +42,17 @@ const SignupPage = () => {
     <div className="login-container">
       <h2>Signup</h2>
       <form>
+        <div className="form-group">
+          <label>Name:</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter name"
+            style={{width: '300px'}}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
         <div className="form-group">
           <label>Email:</label>
           <input

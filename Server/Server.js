@@ -115,6 +115,7 @@ app.post("/signup", (req, res) => {
             const user = new User({
                 _id: new Types.ObjectId(),
                 email: req.body.data.email,
+                name: req.body.data.name,
                 password: req.body.data.password,
                 isVa: req.body.data.isVa,
                 balance: 0
@@ -186,6 +187,16 @@ app.post("/getbalance", (req, res) => {
   }).then((res2) => {
     if (res2) {
       res.send({ balance: res2.balance });
+    }
+  });
+});
+
+app.post("/getUsers", (req, res) => {
+  User.find({
+    isVa: req.body.isVa,
+  }).then((res2) => {
+    if (res2) {
+      res.send({ users: res2 });
     }
   });
 });
