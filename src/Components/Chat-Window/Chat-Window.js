@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useHireContext } from '../../App.js';
 import './Chat-Window.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const ChatWindow = ({ selectedUser, socket }) => {
+const ChatWindow = ({ selectedUser, socket, setHighlightedSender, setNewMessageAlert }) => {
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const { email } = useHireContext();
   const chatMessagesRef = useRef(null);
   const toggleDetailsButtonText = !isExpanded ? 'Hide Details' : 'Show Details';
@@ -32,6 +34,8 @@ const ChatWindow = ({ selectedUser, socket }) => {
       socket.on('privateMessage', newMessage => {
         if (newMessage.sender === selectedUser.email) {
           setChatMessages([...chatMessages, newMessage]);
+          setHighlightedSender(selectedUser);
+          setNewMessageAlert(true);
         }
       });
     }

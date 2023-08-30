@@ -191,6 +191,33 @@ app.post("/getbalance", (req, res) => {
   });
 });
 
+app.post("/getAvailability", (req, res) => {
+  User.findOne({
+    email: req.body.email,
+  }).then((res2) => {
+    if (res2) {
+      res.send({ available: res2.available });
+    }
+  });
+});
+
+app.post("/changeAvailability", (req, res) => {
+  User.findOne({
+    email: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      User.findOneAndUpdate(
+        { email: req.body.email },
+        { available: req.body.available }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
 app.post("/getUsers", (req, res) => {
   User.find({
     isVa: req.body.isVa,
