@@ -22,6 +22,11 @@ function Header() {
                 <li className="nav-item">
                     <Link to='/' className="nav-link">Home</Link>
                 </li>
+                {
+                    isLoggedIn && <li className="nav-item">
+                    <Link to='/dashboard' className="nav-link">Dashboard</Link>
+                </li>
+                }
                 <li className="nav-item">
                     <Link to='/select' className="nav-link">Hire</Link>
                 </li>
@@ -39,7 +44,7 @@ function Header() {
                     </>
                 ) : (
                     <li className="nav-item">
-                        <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
+                        <Link to='/' onClick={handleLogout} className="btn btn-secondary">Logout</Link>
                     </li>
                 )}
                 

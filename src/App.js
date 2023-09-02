@@ -13,6 +13,8 @@ import ThanksPurchasePage from './Components/Thanks-Purchase/Thanks-Purchase';
 import LoginPage from './Components/Login/Login';
 import SignupPage from './Components/Signup/Signup';
 import { AuthProvider } from './Components/Auth/Auth';
+import CustomerDashboard from './Components/Customer-Dashboard/Customer-Dashboard';
+import VaDashboard from './Components/VA-Dashboard/VA-Dashboard';
 
 const HireContext = createContext();
 
@@ -29,6 +31,8 @@ function App() {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
+    const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
 
     const contextValue = {
         selectedService,
@@ -46,7 +50,11 @@ function App() {
         totalPrice,
         setTotalPrice,
         balance,
-        setBalance
+        setBalance,
+        email,
+        setEmail,
+        isVa,
+        setIsVa
     };
 
   return (
@@ -65,6 +73,7 @@ function App() {
               <Route path="/payment" element={<PaymentPage />} />
               <Route path="/enquiry" element={<ThanksEnquiryPage />} />
               <Route path="/purchase" element={<ThanksPurchasePage />} />
+              <Route path="/dashboard" element={isVa ? <VaDashboard /> : <CustomerDashboard />} />
             </Routes>
         </HireContext.Provider>
         <Footer />

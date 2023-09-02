@@ -5,9 +5,10 @@ import { useAuth } from '../Auth/Auth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const {email, setEmail, setBalance, setIsVa} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -15,6 +16,11 @@ const LoginPage = () => {
   } = useAuth();
 
   const handleLogin = () => {
+    if (!email || !password) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+ 
     axios
     .post("http://localhost:8000/login", {
       header: { "Content-Type": "application/json" },
@@ -25,10 +31,15 @@ const LoginPage = () => {
     })
     .then((response) => {
       setIsLoggedIn(true);
+      setIsVa(response.data.user.isVa);
+      sessionStorage.setItem('email', response.data.user.email);
+      sessionStorage.setItem('isVa', response.data.user.isVa);
+      sessionStorage.setItem('token', response.data.token);
+      setBalance(response.data.user.balance)
       navigate('/');
     }).catch((error) => {
       toast.error("Incorrect Email/Password");
-    });;
+    });
   };
 
   return (

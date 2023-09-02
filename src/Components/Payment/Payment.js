@@ -1,11 +1,40 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Payment.css';
 import {Link} from 'react-router-dom';
+import { useHireContext } from '../../App.js';
+import { useAuth } from '../Auth/Auth';
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const {isLoggedIn, setIsLoggedIn} = useAuth();
+    const navigate = useNavigate();
+    const {balance, 
+      setBalance,
+      email,
+      setEmail,
+      totalPrice,
+      setWorkingHours,
+      setSelectedService,
+      setCustomService,
+      setTotalPrice,
+     } = useHireContext();
+
+    useEffect(() => {
+      if(isLoggedIn) {
+        const data = {
+          email: email,
+        };
+        axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+          if (res) {
+              setBalance(res.data.balance);
+          } 
+        });
+      }
+  });
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -16,33 +45,26 @@ const PaymentPage = () => {
     };
 
     const handlePayClick = () => {
-        var data = JSON.stringify({
-        ipn_callback_url: "https://ozchest.com/ipn",
-        success_url: "https://ozchest.com",
-        cancel_url: "https://google.com",
-        });
-
-        var config = {
-        method: "post",
-        url: "http://api.nowpayments.io/v1/invoice",
-        headers: {
-            "x-api-key": "535HF7P-YHW4KWY-NC8VTAW-931RC7Q",
-            "Content-Type": "application/json",
-        },
-        data: data,
-        };
-
-        axios(config)
-        .then(function (response) {
-            if (response) {
-            let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-    width=500,height=500`;
-            window.open(response.data.invoice_url, "test", params);
+        if (totalPrice <= balance) {
+          const data = {
+            email: email,
+            price: totalPrice
+          };
+          axios.post("http://localhost:8000/pay", data).then((res) => {   
+            if (res) {
+                toast.success('Payment Successful');
+                setTotalPrice(0);
+                setWorkingHours(new Map());
+                setSelectedService('');
+                setCustomService('');
+                navigate('/enquiry');
+            } else {
+              toast.error('Payment failed');
             }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+          });
+        } else {
+          toast.error('You do not have enough balance');
+        }
     };
   return (
     <div className="summary-container">

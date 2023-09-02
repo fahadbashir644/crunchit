@@ -22,3 +22,26 @@ body, html {
     flex-shrink: 0; /* Prevents the footer from shrinking */
   }
   
+  
+  .app-container {
+    scrollbar-width: thin !important;
+    scrollbar-color: #979595 black !important;
+  }
+  
+  /* Webkit-based browsers (Chrome, Safari) */
+  .app-container::-webkit-scrollbar {
+    width: 8px !important;
+  }
+  
+  .app-container::-webkit-scrollbar-track {
+    background: #222 !important;
+  }
+  
+  .app-container::-webkit-scrollbar-thumb {
+    background: #ccc !important;
+    border-radius: 4px !important;
+  }
+  
+  .app-container::-webkit-scrollbar-thumb:hover {
+    background: #999 !important;
+  }
