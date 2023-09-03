@@ -15,6 +15,10 @@ import SignupPage from './Components/Signup/Signup';
 import { AuthProvider } from './Components/Auth/Auth';
 import CustomerDashboard from './Components/Customer-Dashboard/Customer-Dashboard';
 import VaDashboard from './Components/VA-Dashboard/VA-Dashboard';
+import HiringRequests from './Components/Hiring-Requests/Hiring-Requests';
+import VirtualAssistants from './Components/Virtual-Assistants/Virtual-Assistants';
+import SetHourlyRate from './Components/Set-Hourly-Rate/Set-Hourly-Rate';
+import AdminDashboard from './Components/Admin-Dashboard/Admin-Dashboard';
 
 const HireContext = createContext();
 
@@ -32,6 +36,7 @@ function App() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [balance, setBalance] = useState(0);
     const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
+    const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('isAdmin') ? sessionStorage.getItem('isAdmin') : false);
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
 
     const contextValue = {
@@ -54,15 +59,17 @@ function App() {
         email,
         setEmail,
         isVa,
-        setIsVa
+        setIsVa,
+        isAdmin,
+        setIsAdmin
     };
 
   return (
     <BrowserRouter>
       <AuthProvider>
       <div className="app-container">
+      <HireContext.Provider value={contextValue}>
         <Header />
-        <HireContext.Provider value={contextValue}>
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<LoginPage />} />
@@ -73,10 +80,13 @@ function App() {
               <Route path="/payment" element={<PaymentPage />} />
               <Route path="/enquiry" element={<ThanksEnquiryPage />} />
               <Route path="/purchase" element={<ThanksPurchasePage />} />
-              <Route path="/dashboard" element={isVa ? <VaDashboard /> : <CustomerDashboard />} />
+              <Route path="/dashboard" element={ isVa ? <VaDashboard /> : isAdmin ? <AdminDashboard /> : <CustomerDashboard />} />
+              <Route path="/hiringRequests" element={<HiringRequests />} />
+              <Route path="/virtualAssistants" element={<VirtualAssistants />} />
+              <Route path="/setHourlyRate" element={<SetHourlyRate />} />
             </Routes>
-        </HireContext.Provider>
         <Footer />
+        </HireContext.Provider>
       </div>
       </AuthProvider>
     </BrowserRouter>

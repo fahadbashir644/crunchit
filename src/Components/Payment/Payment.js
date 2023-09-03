@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import './Payment.css';
 import {Link} from 'react-router-dom';
 import { useHireContext } from '../../App.js';
@@ -17,7 +17,9 @@ const PaymentPage = () => {
       email,
       setEmail,
       totalPrice,
+      workingHours,
       setWorkingHours,
+      selectedService,
       setSelectedService,
       setCustomService,
       setTotalPrice,
@@ -36,6 +38,11 @@ const PaymentPage = () => {
       }
   });
 
+  const totalHours = useMemo(() => {
+    const selectedHours = Array.from(workingHours.values()).flat();
+    return selectedHours.length;
+  }, [workingHours]);
+
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
     };
@@ -48,7 +55,10 @@ const PaymentPage = () => {
         if (totalPrice <= balance) {
           const data = {
             email: email,
-            price: totalPrice
+            price: totalPrice,
+            selectedService: selectedService,
+            totalHours: totalHours,
+            workingHours: workingHours
           };
           axios.post("http://localhost:8000/pay", data).then((res) => {   
             if (res) {

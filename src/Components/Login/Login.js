@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance, setIsVa} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa, setIsAdmin} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -33,9 +33,14 @@ const LoginPage = () => {
       setIsLoggedIn(true);
       setIsVa(response.data.user.isVa);
       sessionStorage.setItem('email', response.data.user.email);
-      sessionStorage.setItem('isVa', response.data.user.isVa);
+      if (response.data.user.isAdmin) {
+        sessionStorage.setItem('isAdmin', response.data.user.isAdmin);
+      } else if (response.data.user.isVa) {
+        sessionStorage.setItem('isVa', response.data.user.isVa);
+      }
       sessionStorage.setItem('token', response.data.token);
-      setBalance(response.data.user.balance)
+      setBalance(response.data.user.balance);
+      setIsAdmin(response.data.user.isAdmin);
       navigate('/');
     }).catch((error) => {
       toast.error("Incorrect Email/Password");

@@ -13,6 +13,7 @@ const crypto = require("crypto");
 const axios = require('axios');
 const http = require('http').Server(app);
 const Message = require("./Models/Message");
+const Subscription = require("./Models/Subscription");
 
 const socketIO = require('socket.io')(http, {
   cors: {
@@ -228,6 +229,48 @@ app.post("/getUsers", (req, res) => {
   });
 });
 
+app.get("/getActiveSubscriptions", (req, res) => {
+  Subscription.find({
+    projectStatus: 'inprogress',
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.get("/getHiringRequests", (req, res) => {
+  Subscription.find({
+    paymentStatus: 'paid',
+    projectStatus: 'pending'
+  }).then((res2) => {
+    if (res2) {
+      res.send({ hiringRequests: res2 });
+    }
+  });
+});
+
+app.get("/getAvailableVas", (req, res) => {
+  User.find({
+    isVa: true,
+    available: true
+  }).then((res2) => {
+    if (res2) {
+      res.send({ vas: res2 });
+    }
+  });
+});
+
+app.get("/getAllVas", (req, res) => {
+  User.find({
+    isVa: true,
+  }).then((res2) => {
+    if (res2) {
+      res.send({ vas: res2 });
+    }
+  });
+});
+
 app.post("/pay", (req, res) => {
   User.findOne({
     email: req.body.email
@@ -237,7 +280,24 @@ app.post("/pay", (req, res) => {
         { email: req.body.email },
         { balance: Number(res2.balance) - Number(req.body.price) }
       ).then((result) => {
-        res.status(200).send();
+        const subscription = new Subscription({
+          _id: new Types.ObjectId(),
+          client: req.body.email,
+          fee: req.body.price,
+          service: req.body.selectedService,
+          totalHours: req.body.totalHours,
+          paymentStatus: 'paid',
+          vaStatus: 'not-assigned',
+          projectStatus: 'pending'
+        });
+        subscription.save()
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((saveError) => {
+          console.error("Error saving subscription:", saveError);
+          res.status(400).send("Error saving user");
+        }); 
       }).catch((error) => {
           res.status(400).send(error);
       });

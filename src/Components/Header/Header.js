@@ -1,12 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import { useAuth } from '../Auth/Auth';
+import { useHireContext } from '../../App';
 
 function Header() {
     const {isLoggedIn, setIsLoggedIn} = useAuth();
+    const {isAdmin, setIsAdmin, setIsVa} = useHireContext();
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
+        setIsAdmin(false);
+        setIsVa(false);
         setIsLoggedIn(false);
     }
   return (
@@ -19,20 +23,41 @@ function Header() {
         </button>
         <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav ms-md-auto">
-                <li className="nav-item">
+                {isAdmin ? (
+                    <>
+                    <li className="nav-item">
+                        <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to="/hiringRequests" className="nav-link">Hiring Requests</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to="/virtualAssistants" className="nav-link">Virtual Assistants</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to="/setHourlyRate" className="nav-link">Set Hourly Rate</Link>
+                    </li>
+                    </>
+                ) : (
+                    <>
+                    <li className="nav-item">
                     <Link to='/' className="nav-link">Home</Link>
-                </li>
-                {
-                    isLoggedIn && <li className="nav-item">
-                    <Link to='/dashboard' className="nav-link">Dashboard</Link>
-                </li>
-                }
-                <li className="nav-item">
-                    <Link to='/select' className="nav-link">Hire</Link>
-                </li>
-                <li className="nav-item">
-                    <Link to='/buy' className="nav-link">Buy CrunchCard</Link>
-                </li>
+                    </li>
+                    {
+                        isLoggedIn && <li className="nav-item">
+                        <Link to='/dashboard' className="nav-link">Dashboard</Link>
+                    </li>
+                    }
+                    <li className="nav-item">
+                        <Link to='/select' className="nav-link">Hire</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to='/buy' className="nav-link">Buy CrunchCard</Link>
+                    </li>
+                    </>
+                )}
+
+                
                 {!isLoggedIn ? (
                     <>
                     <li className="nav-item">
