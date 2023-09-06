@@ -4,6 +4,7 @@ import './Main.css';
 import viImg from "../../Assets/vi.jpg";
 import viImg2 from "../../Assets/vi2.jpg";
 import {Link} from 'react-router-dom';
+import bannerVideo from '../../Assets/banner.mp4';
 
 function Main() {
   return (
@@ -24,8 +25,10 @@ function Main() {
                     </div>
                     <div className="col-xl-5 offset-xl-2 col-md-5 offset-md-1 col-lg-5 offset-lg-1  col-12">
                         <div className="position-relative">
-                            <img src={viImg} alt="about" style={{height: '200px'}}
-                                className="img-fluid position-relative z-1 rounded-4 ms-lg-n5 ms-md-n3"/>
+                        <video autoPlay loop muted className='banner-video' style={{height: '230px'}}>
+                            <source src={bannerVideo} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
                         </div>
                     </div>
                 </div>

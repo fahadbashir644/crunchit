@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Schedule.css';
 import { useHireContext } from '../../App.js';
 import {Link} from 'react-router-dom';
+import axios from "axios";
 
 const SchedulePage = ({ onNext, onBack }) => {
 
@@ -18,8 +19,8 @@ const SchedulePage = ({ onNext, onBack }) => {
     selectedTimeFrame,
     setSelectedTimeFrame,
     totalPrice,
-    setTotalPrice
-    // Other states and functions
+    setTotalPrice,
+    hourlyRate
   } = useHireContext();
 
   const handleDateChange = (date) => {
@@ -42,13 +43,13 @@ const SchedulePage = ({ onNext, onBack }) => {
     if (updatedWorkingHours.has(currentDate)) {
       let hours = updatedWorkingHours.get(currentDate);
       if (!hours.includes(hour)) {
-        price = price + 0.5;
+        price = price + hourlyRate;
         setTotalPrice(price);
         hours.push(hour);
       } else {
         const index = hours.indexOf(hour);
         if (index > -1) {
-          price = price - 0.5;
+          price = price - hourlyRate;
           setTotalPrice(price);
           hours.splice(index, 1);
           if (!hours || hours.length === 0) {
@@ -57,7 +58,7 @@ const SchedulePage = ({ onNext, onBack }) => {
         }
       }
     } else {
-      price = price + 0.5;
+      price = price + hourlyRate;
       setTotalPrice(price);
       updatedWorkingHours.set(currentDate, [hour]);
     }

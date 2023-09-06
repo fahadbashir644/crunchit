@@ -3,7 +3,7 @@ import Footer from './Components/Footer/Footer';
 import Header from './Components/Header/Header';
 import Main from './Components/Main/Main';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import ServiceForm from './Components/Service/Service';
 import SchedulePage from './Components/Schedule/Schedule';
 import SummaryPage from './Components/Summary/Summary';
@@ -19,6 +19,7 @@ import HiringRequests from './Components/Hiring-Requests/Hiring-Requests';
 import VirtualAssistants from './Components/Virtual-Assistants/Virtual-Assistants';
 import SetHourlyRate from './Components/Set-Hourly-Rate/Set-Hourly-Rate';
 import AdminDashboard from './Components/Admin-Dashboard/Admin-Dashboard';
+import axios from "axios";
 
 const HireContext = createContext();
 
@@ -35,11 +36,14 @@ function App() {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [hourlyRate, setHourlyRate] = useState(0);
     const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
     const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('isAdmin') ? sessionStorage.getItem('isAdmin') : false);
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
 
     const contextValue = {
+        hourlyRate,
+        setHourlyRate,
         selectedService,
         setSelectedService,
         customService,
@@ -63,6 +67,14 @@ function App() {
         isAdmin,
         setIsAdmin
     };
+
+    useEffect(() => {
+      axios.get("http://localhost:8000/getHourlyRate").then((res) => {   
+        if (res) {
+          setHourlyRate(res.data.hourlyRate);
+        } 
+      });
+    }, []);
 
   return (
     <BrowserRouter>

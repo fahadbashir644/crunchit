@@ -14,6 +14,7 @@ const axios = require('axios');
 const http = require('http').Server(app);
 const Message = require("./Models/Message");
 const Subscription = require("./Models/Subscription");
+const hourlyRate = require("./Models/hourlyRate");
 
 const socketIO = require('socket.io')(http, {
   cors: {
@@ -210,6 +211,48 @@ app.post("/changeAvailability", (req, res) => {
       User.findOneAndUpdate(
         { email: req.body.email },
         { available: req.body.available }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
+app.get("/getHourlyRate", (req, res) => {
+  hourlyRate.find({}).then((res2) => {
+    if (res2) {
+      res.send({ hourlyRate: res2[0]?.hourlyRate });
+    }
+  });
+});
+
+app.post("/setHourlyRate", (req, res) => {
+  hourlyRate.find({}).then((res2) => {
+    if (res2) {
+      hourlyRate.findOneAndUpdate(
+        { _id: res2[0]?._id },
+        { hourlyRate: req.body.hourlyRate }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
+app.post("/handleSubscription", (req, res) => {
+  Subscription.findOne({
+    _id: req.body.subscriptionId
+  }).then((res2) => {
+    if (res2) {
+      Subscription.findOneAndUpdate(
+        { _id: req.body.subscriptionId },
+        { va: req.body.va,
+          projectStatus: 'inprogress',
+          vaStatus: 'assigned' },
       ).then((result) => {
         res.status(200).send();
       }).catch((error) => {

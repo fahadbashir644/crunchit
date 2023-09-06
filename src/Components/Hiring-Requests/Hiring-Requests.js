@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HiringRequests = () => {
   const [hiringRequests, setHiringRequests] = useState([]);
@@ -11,24 +13,39 @@ const HiringRequests = () => {
         setHiringRequests(res.data.hiringRequests);
       } 
     });
-  }, [hiringRequests]);
 
-  useEffect(() => {
     axios.get("http://localhost:8000/getAvailableVas").then((res) => {   
       if (res) {
         setVirtualAssistants(res.data.vas);
-        console.log(res.data);
       } 
     });
   }, []);
 
   const [selectedVaMap, setSelectedVaMap] = useState({});
 
-  const handleVaSelect = (requestId, vaId) => {
+  const handleVaSelect = (requestId, va) => {
     setSelectedVaMap({
       ...selectedVaMap,
-      [requestId]: vaId,
+      [requestId]: va,
     });
+  };
+
+  const handleAssignVa = (requestId) => {
+    const selectedVaId = selectedVaMap[requestId];
+    if (selectedVaId) {
+      const data = {
+        va: selectedVaId,
+        subscriptionId: requestId
+      };
+      axios.post("http://localhost:8000/handleSubscription", data).then((res) => {   
+        if (res) {
+          setHiringRequests((prevRequests) => prevRequests.filter(request => request._id !== requestId));
+          toast.success('Successfully assigned VA')
+        } 
+      });
+    } else {
+      toast.error('Please select a Virtual Assistant.');
+    }
   };
 
   return (
@@ -49,7 +66,7 @@ const HiringRequests = () => {
           </thead>
           <tbody>
             {hiringRequests.map((request, index) => (
-              <tr key={request.id}>
+              <tr key={request._id}>
                 <td style={{ border: 'none', textAlign: 'center' }}>{index + 1}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{request.client}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{request.service}</td>
@@ -62,19 +79,19 @@ const HiringRequests = () => {
                 <td style={{ border: 'none', textAlign: 'center' }}>
                   <select
                     className="form-select"
-                    value={selectedVaMap[request.id] || ''}
-                    onChange={(e) => handleVaSelect(request.id, e.target.value)}
+                    value={selectedVaMap[request._id] || ''}
+                    onChange={(e) => handleVaSelect(request._id, e.target.value)}
                   >
                     <option value="">Select VA</option>
                     {virtualAssistants.map((va) => (
-                      <option key={va.id} value={va.id}>
+                      <option key={va._id} value={va.email}>
                         {va.name}
                       </option>
                     ))}
                   </select>
                 </td>
-                <td style={{ border: 'none', textAlign: 'center' }}> {/* Assign Button */}
-                  <button className="btn btn-primary" style={{color: '#b9b08'}}>Assign</button>
+                <td style={{ border: 'none', textAlign: 'center' }}>
+                  <button className="btn btn-primary" style={{color: '#b9b08'}} onClick={()=>handleAssignVa(request._id)}>Assign</button>
                 </td>
               </tr>
             ))}

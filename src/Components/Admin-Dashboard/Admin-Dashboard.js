@@ -33,10 +33,10 @@ const AdminDashboard = () => {
             {activeSubscriptions.map((subscription, index) => (
               <tr key={subscription.id}>
                 <td style={{ border: 'none', textAlign: 'center' }}>{index + 1}</td>
-                <td style={{ border: 'none', textAlign: 'center' }}>{subscription.clientName}</td>
+                <td style={{ border: 'none', textAlign: 'center' }}>{subscription.client}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.service}</td>
-                <td style={{ border: 'none', textAlign: 'center' }}>{subscription.vaName}</td>
-                <td style={{ border: 'none', textAlign: 'center' }}>${subscription.totalPrice}</td>
+                <td style={{ border: 'none', textAlign: 'center' }}>{subscription.va}</td>
+                <td style={{ border: 'none', textAlign: 'center' }}>${subscription.fee}</td>
               </tr>
             ))}
           </tbody>

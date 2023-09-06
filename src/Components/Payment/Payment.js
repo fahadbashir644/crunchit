@@ -9,33 +9,33 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
-    const [password, setPassword] = useState('');
-    const {isLoggedIn, setIsLoggedIn} = useAuth();
-    const navigate = useNavigate();
-    const {balance, 
-      setBalance,
-      email,
-      setEmail,
-      totalPrice,
-      workingHours,
-      setWorkingHours,
-      selectedService,
-      setSelectedService,
-      setCustomService,
-      setTotalPrice,
-     } = useHireContext();
+  const [password, setPassword] = useState('');
+  const {isLoggedIn, setIsLoggedIn} = useAuth();
+  const navigate = useNavigate();
+  const {balance, 
+    setBalance,
+    email,
+    setEmail,
+    totalPrice,
+    workingHours,
+    setWorkingHours,
+    selectedService,
+    setSelectedService,
+    setCustomService,
+    setTotalPrice,
+    } = useHireContext();
 
-    useEffect(() => {
-      if(isLoggedIn) {
-        const data = {
-          email: email,
-        };
-        axios.post("http://localhost:8000/getbalance", data).then((res) => {   
-          if (res) {
-              setBalance(res.data.balance);
-          } 
-        });
-      }
+  useEffect(() => {
+    if(isLoggedIn) {
+      const data = {
+        email: email,
+      };
+      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+        if (res) {
+            setBalance(res.data.balance);
+        } 
+      });
+    }
   });
 
   const totalHours = useMemo(() => {

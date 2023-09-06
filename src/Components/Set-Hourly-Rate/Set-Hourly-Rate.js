@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import axios from "axios";
+import { useHireContext } from '../../App.js';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SetHourlyRate = () => {
-  const [hourlyRate, setHourlyRate] = useState('');
+  const {hourlyRate, setHourlyRate} = useHireContext();
 
   const handleSaveClick = () => {
-    // Handle saving the hourly rate
     if (hourlyRate) {
-      // Replace this with your saving logic
-      console.log(`Saved hourly rate: ${hourlyRate}`);
+      const data = {
+        hourlyRate: hourlyRate,
+      };
+      axios.post("http://localhost:8000/setHourlyRate", data).then((res) => {   
+        if (res) {
+          toast.success('Hourly Rate Saved Successfully');
+        } 
+      });
     }
   };
 
   return (
     <div className="container mt-5">
       <h1>Set Hourly Rate</h1>
+      <label className="form-label">Current Hourly Rate: {hourlyRate}</label>
       <div className="mb-3">
         <label htmlFor="hourlyRate" className="form-label">Hourly Rate:</label>
         <input

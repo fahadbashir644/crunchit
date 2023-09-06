@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import { useAuth } from '../Auth/Auth';
 import { useHireContext } from '../../App';
+import logoVideo from '../../Assets/logo.mp4';
 
 function Header() {
     const {isLoggedIn, setIsLoggedIn} = useAuth();
@@ -16,7 +17,12 @@ function Header() {
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark bg-opacity-75 sticky-md-top ">
     <div className="container">
-        <Link to="/" className="navbar-brand"><h3>Crunch<span className="text-primary">It</span></h3></Link>
+        <Link to="/" className="navbar-brand">
+            <video autoPlay loop muted style={{width: '122px', height: '55px'}}>
+            <source src={logoVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
             aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
