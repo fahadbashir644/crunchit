@@ -21,12 +21,71 @@ const CustomerDashboard = () => {
     const [socket, setSocket] = useState(null);
     const [newMessageAlert, setNewMessageAlert] = useState(false);
     const [highlightedSender, setHighlightedSender] = useState(null);
+    const [currentSessionStartTime, setCurrentSessionStartTime] = useState(null);
+
+    // State for the countdown time (remaining time)
+    const [countdownTime, setCountdownTime] = useState(null);
+    const [workingHours, setWorkingHours] = useState(new Map());
+    const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+    // ...
+    const formatCountdownTime = (timeInMillis) => {
+      const minutes = Math.floor((timeInMillis / 1000) / 60);
+      const seconds = Math.floor((timeInMillis / 1000) % 60);
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    useEffect(() => {
+      if (isLoggedIn) {
+        const data = {
+          email: email,
+        };
+        axios.post("http://localhost:8000/getSubscriptionsOfUser", data).then((res) => {   
+          if (res) {
+            setActiveSubscriptions(res.data.subscriptions);
+          } 
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    },[]);
+
+    useEffect(() => {
+      // ...
+  
+      // Initialize the timer based on the current working session
+      if (currentSessionStartTime) {
+        const interval = 1000; // 1 second interval
+        const timer = setInterval(() => {
+          const now = new Date();
+          const endTime = new Date(currentSessionStartTime);
+          endTime.setMinutes(endTime.getMinutes() + 30); // Assuming half-hour intervals
+          const timeRemaining = endTime - now;
+  
+          if (timeRemaining <= 0) {
+            clearInterval(timer);
+            setCurrentSessionStartTime(null); // Reset the session start time
+            setCountdownTime(null); // Reset the countdown time
+          } else {
+            setCountdownTime(timeRemaining);
+          }
+        }, interval);
+  
+        // Store the timer ID in state to clear it on unmount
+        return () => clearInterval(timer);
+      }
+    }, [currentSessionStartTime]);
+  
+    // Function to start a working session
+    const startWorkingSession = () => {
+      const now = new Date();
+      setCurrentSessionStartTime(now);
+    };
 
     useEffect(() => {
       const data = {
-        isVa: true,
+        client: email,
       };
-      axios.post("http://localhost:8000/getUsers", data).then((res) => {   
+      axios.post("http://localhost:8000/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -70,7 +129,11 @@ const CustomerDashboard = () => {
   const handleUserClick = (userId) => {
     setSelectedUserId(userId);
     setNewMessageAlert(false);
-    setHighlightedSender(null); 
+    setHighlightedSender(null);
+    let currentVa = users.find((item) => item._id === selectedUserId);
+    let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
+    setWorkingHours(currentSub['workingHours']);
+    //startWorkingSession();
   };
 
   const handleTopUp = () => {
@@ -98,6 +161,14 @@ const CustomerDashboard = () => {
 
   return (
     <div className="dashboard">
+      <div className="countdown-timer">
+        {countdownTime && (
+          <div>
+            <p>Time Remaining:</p>
+            <p>{formatCountdownTime(countdownTime)}</p>
+          </div>
+        )}
+      </div>
     <div className="container">
       <div className="row">
         <div className="col-md-12">

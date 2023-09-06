@@ -7,7 +7,7 @@ const SubscriptionSchema = Schema({
   fee: { type: Number, require: true },
   service: { type: String, require: true },
   totalHours: { type: Number, require: true },
-  workingHours: { type: Array, require: true },
+  workingHours: { type: Object, require: true },
   paymentStatus: { type: String, require: true },
   vaStatus: { type: String, require: true },
   projectStatus: { type: String, require: true },

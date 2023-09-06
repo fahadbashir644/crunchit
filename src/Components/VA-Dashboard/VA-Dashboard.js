@@ -48,9 +48,9 @@ const VaDashboard = () => {
 
   useEffect(() => {
     const data = {
-      isVa: false,
+      va: email,
     };
-    axios.post("http://localhost:8000/getUsers", data).then((res) => {   
+    axios.post("http://localhost:8000/getRelatedUsers", data).then((res) => {   
       if (res) {
           setUsers(res.data.users);
       } 

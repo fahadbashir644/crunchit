@@ -220,6 +220,16 @@ app.post("/changeAvailability", (req, res) => {
   });
 });
 
+app.post("/getSubscriptionsOfUser", (req, res) => {
+  Subscription.find({
+    client: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
 app.get("/getHourlyRate", (req, res) => {
   hourlyRate.find({}).then((res2) => {
     if (res2) {
@@ -262,14 +272,40 @@ app.post("/handleSubscription", (req, res) => {
   });
 });
 
-app.post("/getUsers", (req, res) => {
-  User.find({
-    isVa: req.body.isVa,
-  }).then((res2) => {
-    if (res2) {
-      res.send({ users: res2 });
+app.post("/getRelatedUsers", (req, res) => {
+  Subscription.find({
+    va: req.body.va,
+    projectStatus: 'inprogress'
+  }).then((subs) => {
+    if (subs) {
+      let relatedUsers = subs.map(sub => sub['client']);
+      User.find({ email: { $in: relatedUsers } }).then((users) => {
+        if (users) {
+          res.send({ users: users });
+        } else {
+          res.send({ users: [] });
+        }
+      });
     }
   });
+});
+
+app.post("/getRelatedVas", (req, res) => {
+  Subscription.find({
+    client: req.body.client,
+    projectStatus: 'inprogress'
+  }).then((subs) => {
+    if (subs) {
+      let relatedVas = subs.map(sub => sub['va']);
+      User.find({ email: { $in: relatedVas } }).then((users) => {
+        if (users) {
+          res.send({ users: users });
+        } else {
+          res.send({ users: [] });
+        }
+      });
+    }
+  })
 });
 
 app.get("/getActiveSubscriptions", (req, res) => {
@@ -331,7 +367,8 @@ app.post("/pay", (req, res) => {
           totalHours: req.body.totalHours,
           paymentStatus: 'paid',
           vaStatus: 'not-assigned',
-          projectStatus: 'pending'
+          projectStatus: 'pending',
+          workingHours: req.body.workingHours
         });
         subscription.save()
         .then((result) => {

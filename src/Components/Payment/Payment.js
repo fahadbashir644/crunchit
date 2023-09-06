@@ -21,6 +21,7 @@ const PaymentPage = () => {
     setWorkingHours,
     selectedService,
     setSelectedService,
+    customService,
     setCustomService,
     setTotalPrice,
     } = useHireContext();
@@ -53,12 +54,16 @@ const PaymentPage = () => {
 
     const handlePayClick = () => {
         if (totalPrice <= balance) {
+        let hours = {};
+          workingHours.forEach((value,key) => {
+            hours[key] = value;
+          });
           const data = {
             email: email,
             price: totalPrice,
-            selectedService: selectedService,
+            selectedService: selectedService ?? customService,
             totalHours: totalHours,
-            workingHours: workingHours
+            workingHours: hours
           };
           axios.post("http://localhost:8000/pay", data).then((res) => {   
             if (res) {
