@@ -13,6 +13,8 @@ const crypto = require("crypto");
 const axios = require('axios');
 const http = require('http').Server(app);
 const Message = require("./Models/Message");
+const Subscription = require("./Models/Subscription");
+const hourlyRate = require("./Models/hourlyRate");
 
 const socketIO = require('socket.io')(http, {
   cors: {
@@ -218,12 +220,142 @@ app.post("/changeAvailability", (req, res) => {
   });
 });
 
-app.post("/getUsers", (req, res) => {
-  User.find({
-    isVa: req.body.isVa,
+app.post("/getSubscriptionsOfUser", (req, res) => {
+  Subscription.find({
+    client: req.body.email
   }).then((res2) => {
     if (res2) {
-      res.send({ users: res2 });
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.post("/getSubscriptionsOfVa", (req, res) => {
+  Subscription.find({
+    va: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.get("/getHourlyRate", (req, res) => {
+  hourlyRate.find({}).then((res2) => {
+    if (res2) {
+      res.send({ hourlyRate: res2[0]?.hourlyRate });
+    }
+  });
+});
+
+app.post("/setHourlyRate", (req, res) => {
+  hourlyRate.find({}).then((res2) => {
+    if (res2) {
+      hourlyRate.findOneAndUpdate(
+        { _id: res2[0]?._id },
+        { hourlyRate: req.body.hourlyRate }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
+app.post("/handleSubscription", (req, res) => {
+  Subscription.findOne({
+    _id: req.body.subscriptionId
+  }).then((res2) => {
+    if (res2) {
+      Subscription.findOneAndUpdate(
+        { _id: req.body.subscriptionId },
+        { va: req.body.va,
+          projectStatus: 'inprogress',
+          vaStatus: 'assigned' },
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
+app.post("/getRelatedUsers", (req, res) => {
+  Subscription.find({
+    va: req.body.va,
+    projectStatus: 'inprogress'
+  }).then((subs) => {
+    if (subs) {
+      let relatedUsers = subs.map(sub => sub['client']);
+      User.find({ email: { $in: relatedUsers } }).then((users) => {
+        if (users) {
+          res.send({ users: users });
+        } else {
+          res.send({ users: [] });
+        }
+      });
+    }
+  });
+});
+
+app.post("/getRelatedVas", (req, res) => {
+  Subscription.find({
+    client: req.body.client,
+    projectStatus: 'inprogress'
+  }).then((subs) => {
+    if (subs) {
+      let relatedVas = subs.map(sub => sub['va']);
+      User.find({ email: { $in: relatedVas } }).then((users) => {
+        if (users) {
+          res.send({ users: users });
+        } else {
+          res.send({ users: [] });
+        }
+      });
+    }
+  })
+});
+
+app.get("/getActiveSubscriptions", (req, res) => {
+  Subscription.find({
+    projectStatus: 'inprogress',
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.get("/getHiringRequests", (req, res) => {
+  Subscription.find({
+    paymentStatus: 'paid',
+    projectStatus: 'pending'
+  }).then((res2) => {
+    if (res2) {
+      res.send({ hiringRequests: res2 });
+    }
+  });
+});
+
+app.get("/getAvailableVas", (req, res) => {
+  User.find({
+    isVa: true,
+    available: true
+  }).then((res2) => {
+    if (res2) {
+      res.send({ vas: res2 });
+    }
+  });
+});
+
+app.get("/getAllVas", (req, res) => {
+  User.find({
+    isVa: true,
+  }).then((res2) => {
+    if (res2) {
+      res.send({ vas: res2 });
     }
   });
 });
@@ -237,7 +369,25 @@ app.post("/pay", (req, res) => {
         { email: req.body.email },
         { balance: Number(res2.balance) - Number(req.body.price) }
       ).then((result) => {
-        res.status(200).send();
+        const subscription = new Subscription({
+          _id: new Types.ObjectId(),
+          client: req.body.email,
+          fee: req.body.price,
+          service: req.body.selectedService,
+          totalHours: req.body.totalHours,
+          paymentStatus: 'paid',
+          vaStatus: 'not-assigned',
+          projectStatus: 'pending',
+          workingHours: req.body.workingHours
+        });
+        subscription.save()
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((saveError) => {
+          console.error("Error saving subscription:", saveError);
+          res.status(400).send("Error saving user");
+        }); 
       }).catch((error) => {
           res.status(400).send(error);
       });

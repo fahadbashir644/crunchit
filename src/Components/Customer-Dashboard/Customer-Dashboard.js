@@ -21,12 +21,75 @@ const CustomerDashboard = () => {
     const [socket, setSocket] = useState(null);
     const [newMessageAlert, setNewMessageAlert] = useState(false);
     const [highlightedSender, setHighlightedSender] = useState(null);
+    const [currentSessionStartTime, setCurrentSessionStartTime] = useState(null);
+
+    // State for the countdown time (remaining time)
+    const [countdownTime, setCountdownTime] = useState(null);
+    const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+    const formatCountdownTime = (timeInMillis) => {
+      const minutes = Math.floor((timeInMillis / 1000) / 60);
+      const seconds = Math.floor((timeInMillis / 1000) % 60);
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+    
+    useEffect(() => {
+      if (isLoggedIn) {
+        const data = {
+          email: email,
+        };
+        axios.post("http://localhost:8000/getSubscriptionsOfUser", data).then((res) => {   
+          if (res) {
+            setActiveSubscriptions(res.data.subscriptions);
+          } 
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    },[]);
+
+    useEffect(() => {
+      if (currentSessionStartTime != null && currentSessionStartTime >= 0) {
+        const interval = 1000;
+        const timer = setInterval(() => {
+          let now = new Date();
+          now =  now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+          let endTime = currentSessionStartTime + (60*60);
+          let timeRemaining = endTime - now;
+          timeRemaining = timeRemaining * 1000;
+          if (timeRemaining <= 0) {
+            clearInterval(timer);
+            setCurrentSessionStartTime(null); // Reset the session start time
+            setCountdownTime(null); // Reset the countdown time
+          } else {
+            setCountdownTime(timeRemaining);
+          }
+        }, interval);
+  
+        // Store the timer ID in state to clear it on unmount
+        return () => clearInterval(timer);
+      }
+    }, [currentSessionStartTime]);
+  
+    // Function to start a working session
+    const startWorkingSession = (hours) => {
+      const now = new Date();
+      const currentDate = now.toLocaleDateString();
+      const currentTime = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+      let sessionStartTime = hours[currentDate]?.find((time) => currentTime-(time*3600) >= 0 && currentTime-(time*3600) <= 3600);
+      if (sessionStartTime != null && sessionStartTime >= 0) {
+        sessionStartTime = sessionStartTime * 60 * 60;
+        setCurrentSessionStartTime(sessionStartTime);
+      } else {
+        setCountdownTime(null);
+        setCurrentSessionStartTime(null);
+      }
+    };
 
     useEffect(() => {
       const data = {
-        isVa: true,
+        client: email,
       };
-      axios.post("http://localhost:8000/getUsers", data).then((res) => {   
+      axios.post("http://localhost:8000/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -70,7 +133,12 @@ const CustomerDashboard = () => {
   const handleUserClick = (userId) => {
     setSelectedUserId(userId);
     setNewMessageAlert(false);
-    setHighlightedSender(null); 
+    setHighlightedSender(null);
+    let currentVa = users.find((item) => item._id === userId);
+    let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
+    if (currentSub) {
+      startWorkingSession(currentSub['workingHours']);
+    }
   };
 
   const handleTopUp = () => {
@@ -100,7 +168,7 @@ const CustomerDashboard = () => {
     <div className="dashboard">
     <div className="container">
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-6">
           <div className="balance-topup">
             <div className="current-balance">
               Current Balance: ${balance}
@@ -112,13 +180,23 @@ const CustomerDashboard = () => {
                 className="form-control"
                 id="topupInput"
                 value={topup}
-                style={{width: "50%"}}
+                style={{width: "140px"}}
                 onChange={handleTopupChange}
               />
             </div>
             <button className="btn btn-primary" onClick={handleTopUp}>
               Top Up
             </button>
+          </div>
+        </div>
+        <div className='col-md-6'>
+          <div className="countdown-timer">
+          {countdownTime && (
+            <div className='timer'>
+              <p>Time Remaining:</p>
+              <p>{formatCountdownTime(countdownTime)}</p>
+            </div>
+          )}
           </div>
         </div>
       </div>

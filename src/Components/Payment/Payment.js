@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import './Payment.css';
 import {Link} from 'react-router-dom';
 import { useHireContext } from '../../App.js';
@@ -9,32 +9,40 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
-    const [password, setPassword] = useState('');
-    const {isLoggedIn, setIsLoggedIn} = useAuth();
-    const navigate = useNavigate();
-    const {balance, 
-      setBalance,
-      email,
-      setEmail,
-      totalPrice,
-      setWorkingHours,
-      setSelectedService,
-      setCustomService,
-      setTotalPrice,
-     } = useHireContext();
+  const [password, setPassword] = useState('');
+  const {isLoggedIn, setIsLoggedIn} = useAuth();
+  const navigate = useNavigate();
+  const {balance, 
+    setBalance,
+    email,
+    setEmail,
+    totalPrice,
+    workingHours,
+    setWorkingHours,
+    selectedService,
+    setSelectedService,
+    customService,
+    setCustomService,
+    setTotalPrice,
+    } = useHireContext();
 
-    useEffect(() => {
-      if(isLoggedIn) {
-        const data = {
-          email: email,
-        };
-        axios.post("http://localhost:8000/getbalance", data).then((res) => {   
-          if (res) {
-              setBalance(res.data.balance);
-          } 
-        });
-      }
+  useEffect(() => {
+    if(isLoggedIn) {
+      const data = {
+        email: email,
+      };
+      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+        if (res) {
+            setBalance(res.data.balance);
+        } 
+      });
+    }
   });
+
+  const totalHours = useMemo(() => {
+    const selectedHours = Array.from(workingHours.values()).flat();
+    return selectedHours.length;
+  }, [workingHours]);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -46,9 +54,16 @@ const PaymentPage = () => {
 
     const handlePayClick = () => {
         if (totalPrice <= balance) {
+        let hours = {};
+          workingHours.forEach((value,key) => {
+            hours[key] = value;
+          });
           const data = {
             email: email,
-            price: totalPrice
+            price: totalPrice,
+            selectedService: selectedService ?? customService,
+            totalHours: totalHours,
+            workingHours: hours
           };
           axios.post("http://localhost:8000/pay", data).then((res) => {   
             if (res) {

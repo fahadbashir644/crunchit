@@ -134,3 +134,20 @@ input:checked + .slider:before {
 .list-group-item {
   border: 1px solid #222 !important;
 }
+
+.countdown-timer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.timer {
+  font-size: 24px;
+  color: #ffffff; /* White text color */
+  background-color: #161616; /* Blue background color */
+  padding: 10px 20px; /* Add padding for better visual appeal */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  margin-left: 20px; /* Add some spacing between timer and top-up bar */
+}
+
