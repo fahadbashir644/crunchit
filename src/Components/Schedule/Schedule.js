@@ -31,7 +31,7 @@ const SchedulePage = ({ onNext, onBack }) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    return day + '/' + month + '/' + year;
+    return month + '/' + day + '/' + year;
   };
 
   const handleHourClick = (event, day) => {

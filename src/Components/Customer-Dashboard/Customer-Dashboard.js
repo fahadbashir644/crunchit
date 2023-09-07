@@ -50,17 +50,14 @@ const CustomerDashboard = () => {
     },[]);
 
     useEffect(() => {
-      // ...
-  
-      // Initialize the timer based on the current working session
-      if (currentSessionStartTime) {
-        const interval = 1000; // 1 second interval
+      if (currentSessionStartTime != null && currentSessionStartTime >= 0) {
+        const interval = 1000;
         const timer = setInterval(() => {
-          const now = new Date();
-          const endTime = new Date(currentSessionStartTime);
-          endTime.setMinutes(endTime.getMinutes() + 30); // Assuming half-hour intervals
-          const timeRemaining = endTime - now;
-  
+          let now = new Date();
+          now =  now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+          let endTime = currentSessionStartTime + (60*60);
+          let timeRemaining = endTime - now;
+          timeRemaining = timeRemaining * 1000;
           if (timeRemaining <= 0) {
             clearInterval(timer);
             setCurrentSessionStartTime(null); // Reset the session start time
@@ -76,9 +73,15 @@ const CustomerDashboard = () => {
     }, [currentSessionStartTime]);
   
     // Function to start a working session
-    const startWorkingSession = () => {
+    const startWorkingSession = (hours) => {
       const now = new Date();
-      setCurrentSessionStartTime(now);
+      const currentDate = now.toLocaleDateString();
+      const currentTime = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+      let sessionStartTime = hours[currentDate]?.find((time) => currentTime-(time*3600) >= 0 && currentTime-(time*3600) <= 3600);
+      if (sessionStartTime != null && sessionStartTime >= 0) {
+        sessionStartTime = sessionStartTime * 60 * 60;
+        setCurrentSessionStartTime(sessionStartTime);
+      }
     };
 
     useEffect(() => {
@@ -130,10 +133,10 @@ const CustomerDashboard = () => {
     setSelectedUserId(userId);
     setNewMessageAlert(false);
     setHighlightedSender(null);
-    let currentVa = users.find((item) => item._id === selectedUserId);
+    let currentVa = users.find((item) => item._id === userId);
     let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
     setWorkingHours(currentSub['workingHours']);
-    //startWorkingSession();
+    startWorkingSession(currentSub['workingHours']);
   };
 
   const handleTopUp = () => {
@@ -161,17 +164,9 @@ const CustomerDashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="countdown-timer">
-        {countdownTime && (
-          <div>
-            <p>Time Remaining:</p>
-            <p>{formatCountdownTime(countdownTime)}</p>
-          </div>
-        )}
-      </div>
     <div className="container">
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-6">
           <div className="balance-topup">
             <div className="current-balance">
               Current Balance: ${balance}
@@ -183,13 +178,23 @@ const CustomerDashboard = () => {
                 className="form-control"
                 id="topupInput"
                 value={topup}
-                style={{width: "50%"}}
+                style={{width: "140px"}}
                 onChange={handleTopupChange}
               />
             </div>
             <button className="btn btn-primary" onClick={handleTopUp}>
               Top Up
             </button>
+          </div>
+        </div>
+        <div className='col-md-6'>
+          <div className="countdown-timer">
+          {countdownTime && (
+            <div className='timer'>
+              <p>Time Remaining:</p>
+              <p>{formatCountdownTime(countdownTime)}</p>
+            </div>
+          )}
           </div>
         </div>
       </div>
