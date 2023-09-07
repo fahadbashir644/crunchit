@@ -230,6 +230,16 @@ app.post("/getSubscriptionsOfUser", (req, res) => {
   });
 });
 
+app.post("/getSubscriptionsOfVa", (req, res) => {
+  Subscription.find({
+    va: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
 app.get("/getHourlyRate", (req, res) => {
   hourlyRate.find({}).then((res2) => {
     if (res2) {

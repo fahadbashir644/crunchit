@@ -25,9 +25,7 @@ const CustomerDashboard = () => {
 
     // State for the countdown time (remaining time)
     const [countdownTime, setCountdownTime] = useState(null);
-    const [workingHours, setWorkingHours] = useState(new Map());
     const [activeSubscriptions, setActiveSubscriptions] = useState([]);
-    // ...
     const formatCountdownTime = (timeInMillis) => {
       const minutes = Math.floor((timeInMillis / 1000) / 60);
       const seconds = Math.floor((timeInMillis / 1000) % 60);
@@ -135,8 +133,9 @@ const CustomerDashboard = () => {
     setHighlightedSender(null);
     let currentVa = users.find((item) => item._id === userId);
     let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
-    setWorkingHours(currentSub['workingHours']);
-    startWorkingSession(currentSub['workingHours']);
+    if (currentSub) {
+      startWorkingSession(currentSub['workingHours']);
+    }
   };
 
   const handleTopUp = () => {
