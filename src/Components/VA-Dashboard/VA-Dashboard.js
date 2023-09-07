@@ -82,6 +82,9 @@ const VaDashboard = () => {
     if (sessionStartTime != null && sessionStartTime >= 0) {
       sessionStartTime = sessionStartTime * 60 * 60;
       setCurrentSessionStartTime(sessionStartTime);
+    } else {
+      setCountdownTime(null);
+      setCurrentSessionStartTime(null);
     }
   };
 
