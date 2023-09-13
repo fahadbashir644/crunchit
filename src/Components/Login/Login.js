@@ -41,7 +41,7 @@ const LoginPage = () => {
       sessionStorage.setItem('token', response.data.token);
       setBalance(response.data.user.balance);
       setIsAdmin(response.data.user.isAdmin);
-      navigate('/');
+      navigate('/dashboard');
     }).catch((error) => {
       toast.error("Incorrect Email/Password");
     });

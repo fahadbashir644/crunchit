@@ -20,8 +20,17 @@ const SchedulePage = ({ onNext, onBack }) => {
     setSelectedTimeFrame,
     totalPrice,
     setTotalPrice,
-    hourlyRate
+    hourlyRate,
+    setHourlyRate
   } = useHireContext();
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/getHourlyRate").then((res) => {   
+      if (res) {
+        setHourlyRate(res.data.hourlyRate);
+      } 
+    });
+  }, []);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

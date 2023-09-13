@@ -87,7 +87,7 @@
   }
   
   .message-input {
-    padding: 10px;
+    padding-top: 10px;
     display: flex;
     align-items: center;
   }
@@ -101,3 +101,20 @@
     min-width: 80px;
   }
   
+  @media (max-width: 767px) {
+    .message-input {
+      flex-direction: column;
+    }
+    .message-input button {
+      margin-top: 10px;
+    }
+  }
+
+  @media (max-width: 467px) {
+    .chat-header {
+      flex-direction: column-reverse;
+    }
+    .chat-header button {
+      margin-bottom: 10px;
+    }
+  }

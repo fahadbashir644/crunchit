@@ -12,15 +12,15 @@ const ThanksEnquiryPage = () => {
   return (
     <div className="summary-container">
         <h2 className='cstm-h2'>Enquiry</h2>
-        <div className="mt-4 form-group">
+        <div className="mt-4 form-group enquiry-div">
               <label>Email:</label>
               <input
                   type="email"
                   className="form-control"
                   id="emailInput2"
                   value={email}
-                  style={{width: "50%"}}
                   onChange={handleEmailChange}
+                  style={{width: '400px'}}
               />
               <p className='mt-4'>Thank you for your request, we will review it and send you a quote for your
                 request within the hour</p>

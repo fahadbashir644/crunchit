@@ -20,6 +20,7 @@ import VirtualAssistants from './Components/Virtual-Assistants/Virtual-Assistant
 import SetHourlyRate from './Components/Set-Hourly-Rate/Set-Hourly-Rate';
 import AdminDashboard from './Components/Admin-Dashboard/Admin-Dashboard';
 import axios from "axios";
+import SetService from './Components/Set-Service/Set-Service';
 
 const HireContext = createContext();
 
@@ -68,14 +69,6 @@ function App() {
         setIsAdmin
     };
 
-    useEffect(() => {
-      axios.get("http://localhost:8000/getHourlyRate").then((res) => {   
-        if (res) {
-          setHourlyRate(res.data.hourlyRate);
-        } 
-      });
-    }, []);
-
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -96,6 +89,7 @@ function App() {
               <Route path="/hiringRequests" element={<HiringRequests />} />
               <Route path="/virtualAssistants" element={<VirtualAssistants />} />
               <Route path="/setHourlyRate" element={<SetHourlyRate />} />
+              <Route path="/setService" element={<SetService />} />
             </Routes>
         <Footer />
         </HireContext.Provider>

@@ -84,25 +84,27 @@ const PaymentPage = () => {
   return (
     <div className="summary-container">
         <h2 className='cstm-h2'>Make Payment</h2>
-        <div className="mt-4 form-group">
+        <div className="mt-4 form-group payment-div">
+          <div>
               <label>Email:</label>
               <input
                   type="email"
                   className="form-control"
                   id="emailInput"
                   value={email}
-                  style={{width: "50%"}}
                   onChange={handleEmailChange}
               />
+            </div>
+            <div>
               <label className='mt-4'>Password:</label>
               <input
                   type="password"
                   className="form-control"
                   id="emailInput"
                   value={password}
-                  style={{width: "50%"}}
                   onChange={handlePasswordChange}
               />
+            </div>
               <button className='btn btn-primary mt-4' onClick={handlePayClick}>Pay</button>
         </div>
         <div className="d-flex justify-content-center mt-6">

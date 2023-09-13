@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useHireContext } from '../../App.js';
 import {Link} from 'react-router-dom';
+import './Service.css';
+import axios from "axios";
 
 const ServiceForm = () => {
+  const [services, setServices] = useState([]);
   const servicesList = [
     'Data entry',
     'Social media',
@@ -23,12 +26,21 @@ const ServiceForm = () => {
     'Trading and business transactions',
     'Crypto transactions'
 ];
+
 const {
   selectedService,
   setSelectedService,
   customService,
   setCustomService
 } = useHireContext();
+
+useEffect(() => {
+  axios.get("http://localhost:8000/getAllServices").then((res) => {   
+    if (res) {
+      setServices(res.data.services);
+    } 
+  });
+}, []);
 
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
@@ -41,7 +53,7 @@ const {
   return (
     <div className='container mt-5' style={{minHeight: '60vh'}}>
       <form>
-          <div className="form-group">
+          <div className="form-group service-div">
               <label htmlFor="serviceSelect">Service:</label>
               <select
               className="form-control"
@@ -51,7 +63,7 @@ const {
               onChange={handleServiceChange}
               >
               <option value="">Select...</option>
-              {servicesList.map((service, index) => (
+              {services.map((service, index) => (
                   <option key={index} value={service}>
                   {service}
                   </option>

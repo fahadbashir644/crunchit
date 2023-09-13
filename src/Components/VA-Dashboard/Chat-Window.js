@@ -6,33 +6,28 @@ import './Chat-Window.css';
 const ChatWindow = ({ selectedUser, socket }) => {
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-  const {
-    email
-   } = useHireContext();
+  const { email } = useHireContext();
 
-   useEffect(() => {
+  useEffect(() => {
     if (selectedUser) {
       const data = {
         sender: email,
-        receiver: selectedUser.email
+        receiver: selectedUser.email,
       };
-      axios.post('http://localhost:8000/getMessages', data)
-        .then(response => {
+      axios
+        .post('http://localhost:8000/getMessages', data)
+        .then((response) => {
           setChatMessages(response.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching chat history:', error);
         });
     }
   }, [selectedUser]);
 
   useEffect(() => {
-    console.log('out');
     if (selectedUser) {
-      console.log('asd');
-      socket.on('privateMessage', newMessage => {
-        console.log(newMessage.sender);
-        console.log(selectedUser.email);
+      socket.on('privateMessage', (newMessage) => {
         if (newMessage.sender === selectedUser.email) {
           // Update chat history only if the message is from the selected user
           setChatMessages([...chatMessages, newMessage]);
@@ -54,36 +49,39 @@ const ChatWindow = ({ selectedUser, socket }) => {
   };
 
   return (
-    <div className="chat-window">
-    <div className="chat-header mb-4">
-      <h5>Chat with {selectedUser.name}</h5>
-    </div>
-    <div className="chat-messages">
-      {chatMessages.map((message, index) => (
-        <div
-          key={index}
-          className={`message-container ${
-            message.sender === email ? 'sent' : 'received'
-          }`}
+    <div className="chat-window container">
+      <div className="chat-header mb-4">
+        <h5>Chat with {selectedUser.name}</h5>
+      </div>
+      <div className="chat-messages">
+        {chatMessages.map((message, index) => (
+          <div
+            key={index}
+            className={`message-container ${
+              message.sender === email ? 'sent' : 'received'
+            }`}
+          >
+            <div className="message">{message.text}</div>
+          </div>
+        ))}
+      </div>
+      <div className="message-input">
+        <button
+          className="btn btn-primary btn-block mb-2"
+          onClick={handleSendMessage}
         >
-          <div className="message">{message.text}</div>
-        </div>
-      ))}
+          Send Message
+        </button>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Type your message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </div>
     </div>
-    <div className="message-input">
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Type your message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button className="btn btn-primary" onClick={handleSendMessage}>
-        Send
-      </button>
-    </div>
-  </div>
-);
+  );
 };
 
 export default ChatWindow;

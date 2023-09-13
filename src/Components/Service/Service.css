@@ -1,0 +1,10 @@
+.service-div label {
+    margin-bottom: 10px;
+}
+@media (max-width: 467px) {
+    .service-div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}

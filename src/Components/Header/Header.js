@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import { useAuth } from '../Auth/Auth';
 import { useHireContext } from '../../App';
 import logoVideo from '../../Assets/logo.mp4';
-
+import './Header.css'
 function Header() {
     const {isLoggedIn, setIsLoggedIn} = useAuth();
     const {isAdmin, setIsAdmin, setIsVa} = useHireContext();
@@ -43,6 +43,9 @@ function Header() {
                     <li className="nav-item">
                         <Link to="/setHourlyRate" className="nav-link">Set Hourly Rate</Link>
                     </li>
+                    <li className="nav-item">
+                        <Link to="/setService" className="nav-link">Set Service</Link>
+                    </li>
                     </>
                 ) : (
                     <>
@@ -65,14 +68,14 @@ function Header() {
 
                 
                 {!isLoggedIn ? (
-                    <>
+                    <div className = 'header-btns'>
                     <li className="nav-item">
                     <Link to='/login' className="btn btn-primary mr-2">Login</Link>
                     </li>
                     <li className="nav-item">
                         <Link to='/signup' className="btn btn-secondary">Signup</Link>
                     </li>
-                    </>
+                    </div>
                 ) : (
                     <li className="nav-item">
                         <Link to='/' onClick={handleLogout} className="btn btn-secondary">Logout</Link>

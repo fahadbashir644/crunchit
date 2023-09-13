@@ -15,6 +15,9 @@ const http = require('http').Server(app);
 const Message = require("./Models/Message");
 const Subscription = require("./Models/Subscription");
 const hourlyRate = require("./Models/hourlyRate");
+const Service = require("./Models/Service");
+const bcrypt = require("bcrypt");
+const saltrounds = 2;
 
 const socketIO = require('socket.io')(http, {
   cors: {
@@ -97,10 +100,15 @@ app.post("/login", (req, res) => {
       email: req.body.data.email,
     }).then((user) => {
       if (user) {
-        const token = jwt.sign({ userId: user._id }, "jwtToken", {
-          expiresIn: "1h",
+        console.log(user);
+        bcrypt.compare(req.body.data.password, user.password, (err, response) => {
+          if (response) {
+            const token = jwt.sign({ userId: user._id }, "jwtToken", {
+              expiresIn: "1h",
+            });
+            res.status(200).send({ user, token });
+          }
         });
-        res.status(200).send({ user, token });
       } else {
         res.status(400).send("User does not exist");
       }
@@ -112,28 +120,35 @@ app.post("/signup", (req, res) => {
         email: req.body.data.email,
     }).then((userExist) => {
         if (userExist) {
-          res.status(402).send("Email already exists");
+          res.status(400).send("Email already exists");
         } else {
-            const user = new User({
+          bcrypt.hash(req.body.data.password, saltrounds, (err, hash) => {
+            if (err) {
+              console.error('err2', err);
+              res.status(400).send(err);
+            } else {
+              const user = new User({
                 _id: new Types.ObjectId(),
                 email: req.body.data.email,
                 name: req.body.data.name,
-                password: req.body.data.password,
+                password: hash,
                 isVa: req.body.data.isVa,
                 balance: 0
-            });
-            user.save()
-            .then((result) => {
-                res.status(200).send(result);
-            })
-            .catch((saveError) => {
-              console.error("Error saving user:", saveError);
-              res.status(400).send("Error saving user");
-            });    
+              });
+              user.save()
+              .then((result) => {
+                  res.status(200).send(result);
+              })
+              .catch((saveError) => {
+                console.error("Error saving user:", saveError);
+                res.status(400).send("Error saving user");
+              });    
+            }
+          });
         }
     }).catch((error) => {
       console.error('err2', error);
-        res.status(400).send(error);
+      res.status(400).send(error);
     });
 });
 
@@ -203,6 +218,44 @@ app.post("/getAvailability", (req, res) => {
   });
 });
 
+app.post("/addService", (req, res) => {
+  Service.findOne({
+    name: req.body.service,
+  }).then((service) => {
+    if (service) {
+      res.status(400).send("Service Already Exists.");
+    } else {
+      const service = new Service({
+        _id: new Types.ObjectId(),
+        name: req.body.service,
+      });
+      service.save()
+      .then((result) => {
+          res.status(200).send(result);
+      })
+    }
+  });
+});
+
+app.post("/removeService", (req, res) => {
+  Service.deleteOne({
+    name: req.body.service,
+  }).then((res2) => {
+    if (res2) {
+      res.status(200).send();
+    }
+  });
+});
+
+app.get("/getAllServices", (req, res) => {
+  Service.find({}).then((res2) => {
+    if (res2) {
+      let services = res2.map(service => service['name']);
+      res.send({ services: services });
+    }
+  });
+});
+
 app.post("/changeAvailability", (req, res) => {
   User.findOne({
     email: req.body.email
@@ -220,9 +273,55 @@ app.post("/changeAvailability", (req, res) => {
   });
 });
 
+app.post("/completeProject", (req, res) => {
+  Subscription.findOneAndUpdate(
+    { _id: req.body._id },
+    { projectStatus: 'complete' }
+  ).then((result) => {
+    let balance = Number(req.body.balance);
+    let projectFee = Number(req.body.vaRate) * Number(req.body.workingHours);
+    balance += projectFee;
+    User.findOneAndUpdate(
+      { email: req.body.va },
+      { balance:  balance}
+    ).then((result) => {
+      Subscription.find({
+        client: req.body.email,
+        projectStatus: 'inprogress'
+      }).then((res2) => {
+        if (res2) {
+          res.send({ subscriptions: res2 });
+        }
+      });
+    }).catch((error) => {
+        res.status(400).send(error);
+    });
+  }).catch((error) => {
+      res.status(400).send(error);
+  });
+});
+
+app.post("/setRateOfVa", (req, res) => {
+  User.findOne({
+    _id: req.body.va
+  }).then((res2) => {
+    if (res2) {
+      User.findOneAndUpdate(
+        { _id: req.body.va },
+        { vaRate: Number(req.body.vaRate) }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
 app.post("/getSubscriptionsOfUser", (req, res) => {
   Subscription.find({
-    client: req.body.email
+    client: req.body.email,
+    projectStatus: 'inprogress'
   }).then((res2) => {
     if (res2) {
       res.send({ subscriptions: res2 });
@@ -321,6 +420,17 @@ app.post("/getRelatedVas", (req, res) => {
 app.get("/getActiveSubscriptions", (req, res) => {
   Subscription.find({
     projectStatus: 'inprogress',
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.get("/getCompletedSubscriptionsOfVa", (req, res) => {
+  Subscription.find({
+    va: req.body.va,
+    projectStatus: 'complete',
   }).then((res2) => {
     if (res2) {
       res.send({ subscriptions: res2 });

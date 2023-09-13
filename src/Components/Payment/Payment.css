@@ -3,3 +3,29 @@
     margin-bottom: 20px;
     color: #ccc;
   }
+
+  .payment-div input {
+    width: 50%;
+  }
+
+  .payment-div button {
+    width: 100px;
+  }
+  
+  @media (max-width: 467px) {
+    .summary-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .payment-div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .payment-div input {
+      width: 100%;
+    }
+  }

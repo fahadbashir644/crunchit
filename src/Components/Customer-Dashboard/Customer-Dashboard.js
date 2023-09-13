@@ -94,7 +94,7 @@ const CustomerDashboard = () => {
             setUsers(res.data.users);
         } 
       });
-    }, []);
+    }, [activeSubscriptions]);
 
   useEffect(() => {
     const newSocket = io('http://localhost:8000');
@@ -205,7 +205,7 @@ const CustomerDashboard = () => {
           <UserList
             users={users}
             handleUserClick={handleUserClick}
-            highlightedSender={highlightedSender} // Pass the highlighted sender
+            highlightedSender={highlightedSender}
           />
         </div>
         <div className="col-md-9">
@@ -216,6 +216,9 @@ const CustomerDashboard = () => {
                 socket={socket}
                 setNewMessageAlert={setNewMessageAlert}
                 setHighlightedSender={setHighlightedSender}
+                activeSubscriptions={activeSubscriptions}
+                setActiveSubscriptions={setActiveSubscriptions}
+                setSelectedUser={setSelectedUserId}
               />
             ) : (
               <p>Select a user to start chatting</p>
