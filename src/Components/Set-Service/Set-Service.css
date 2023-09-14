@@ -2,6 +2,34 @@
     width: 43%;
 }
 
+.list-group {
+    width: 42%;
+}
+
 .list-group-item {
-    width: 43%;
+    width: 100%;
+}
+
+.d-flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.d-flex-row {
+    width: 80%;;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 767px) {
+    .input-group {
+        width: 100%;
+    }
+    
+    .list-group {
+        width: 100%;
+    }
 }

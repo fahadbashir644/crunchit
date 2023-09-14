@@ -54,14 +54,11 @@ const SetService = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="dashboard-header">
-        <h3 style={{ color: 'rgb(102 99 99)' }}>Admin Dashboard</h3>
+    <div className="container d-flex-column mt-5">
+      <div className="dashboard-header d-flex-row">
+      <h3 style={{ color: 'rgb(102 99 99)' }}>Add New Service</h3>
       </div>
-      <div className="mb-3">
-        <label htmlFor="newService" className="form-label">
-          Add New Service:
-        </label>
+      <div className="mb-3 d-flex-row">
         <div className="input-group">
           <input
             type="text"
@@ -75,11 +72,12 @@ const SetService = () => {
           </button>
         </div>
       </div>
-      <div className="mt-4">
-        <h4>Existing Services:</h4>
+      <div className="mt-4 d-flex-row">
+      <h4 style={{ color: 'rgb(102 99 99)' }}>Existing Services</h4>
         <ul className="list-group">
-          {services.map((service) => (
-            <li key={service} className="list-group-item d-flex justify-content-between align-items-center">
+          {services.map((service, index) => (
+            <div>
+            <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
             {service}
               <button
                 className="btn btn-danger btn-sm"
@@ -88,6 +86,7 @@ const SetService = () => {
                 Remove
               </button>
             </li>
+            </div>
           ))}
         </ul>
       </div>

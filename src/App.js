@@ -21,6 +21,8 @@ import SetHourlyRate from './Components/Set-Hourly-Rate/Set-Hourly-Rate';
 import AdminDashboard from './Components/Admin-Dashboard/Admin-Dashboard';
 import axios from "axios";
 import SetService from './Components/Set-Service/Set-Service';
+import Sidebar from './Components/Sidebar/Sidebar';
+import { FaAngleRight, FaAngleLeft } from 'react-icons/fa6';
 
 const HireContext = createContext();
 
@@ -69,12 +71,24 @@ function App() {
         setIsAdmin
     };
 
+    const [isActive, setIsActive] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <BrowserRouter>
       <AuthProvider>
-      <div className="app-container">
       <HireContext.Provider value={contextValue}>
-        <Header />
+      {isAdmin ? <Sidebar isActive={isActive} setIsActive={setIsActive} /> : ''}
+      <div className={`app-container ${isActive ? 'active-cont' : ''}`}>
+      {isAdmin ?
+      <a className="btn border-0" id="menu-btn" onClick={toggleSidebar}>
+        {isActive ? <FaAngleLeft /> : <FaAngleRight />}
+          {/* <i className={`bx ${isActive ? 'bx-arrow-left' : 'bx-menu'}`}></i> */}
+        </a> : ''}
+        {!isAdmin ? <Header /> : ''}
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<LoginPage />} />
@@ -92,8 +106,8 @@ function App() {
               <Route path="/setService" element={<SetService />} />
             </Routes>
         <Footer />
-        </HireContext.Provider>
       </div>
+      </HireContext.Provider>
       </AuthProvider>
     </BrowserRouter>
   );

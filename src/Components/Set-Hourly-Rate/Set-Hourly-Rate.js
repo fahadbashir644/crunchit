@@ -3,6 +3,7 @@ import axios from "axios";
 import { useHireContext } from '../../App.js';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Set-Hourly-Rate.css';
 
 const SetHourlyRate = () => {
   const {hourlyRate, setHourlyRate} = useHireContext();
@@ -21,10 +22,10 @@ const SetHourlyRate = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h1>Set Hourly Rate</h1>
-      <label className="form-label">Current Hourly Rate: {hourlyRate}</label>
-      <div className="mb-3">
+    <div className="container d-flex-column mt-5">
+      <h3 style={{ color: 'rgb(102 99 99)' }}>Set Hourly Rate</h3>
+      <div className="mb-3 rate-div">
+        <label className="form-label">Current Hourly Rate: {hourlyRate}</label>
         <label htmlFor="hourlyRate" className="form-label">Hourly Rate:</label>
         <input
           style={{width: '200px'}}

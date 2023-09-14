@@ -2,11 +2,11 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import { useAuth } from '../Auth/Auth';
 import { useHireContext } from '../../App';
-import logoVideo from '../../Assets/logo.mp4';
+import logoVideo from '../../Assets/logo.png';
 import './Header.css'
 function Header() {
     const {isLoggedIn, setIsLoggedIn} = useAuth();
-    const {isAdmin, setIsAdmin, setIsVa} = useHireContext();
+    const {isAdmin, setIsAdmin, setIsVa, isVa} = useHireContext();
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
@@ -18,10 +18,7 @@ function Header() {
     <nav className="navbar navbar-expand-md navbar-dark bg-dark bg-opacity-75 sticky-md-top ">
     <div className="container">
         <Link to="/" className="navbar-brand">
-            <video autoPlay loop muted style={{width: '122px', height: '55px'}}>
-            <source src={logoVideo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+            <img src={logoVideo} alt='' style={{width:'162px', height:'60px'}}/>
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
             aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,36 +26,29 @@ function Header() {
         </button>
         <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav ms-md-auto">
-                {isAdmin ? (
+                {isLoggedIn ? (
                     <>
                     <li className="nav-item">
-                        <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                    <Link to='/' className="nav-link">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/hiringRequests" className="nav-link">Hiring Requests</Link>
+                        <Link to='/dashboard' className="nav-link">Dashboard</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/virtualAssistants" className="nav-link">Virtual Assistants</Link>
+                    {
+                        isVa ? '': <li className="nav-item">
+                        <Link to='/select' className="nav-link">Hire</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/setHourlyRate" className="nav-link">Set Hourly Rate</Link>
+                    }
+                    {
+                        isVa ? '': <li className="nav-item">
+                        <Link to='/buy' className="nav-link">Buy CrunchCard</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/setService" className="nav-link">Set Service</Link>
-                    </li>
+                    }
                     </>
                 ) : (
                     <>
                     <li className="nav-item">
                     <Link to='/' className="nav-link">Home</Link>
-                    </li>
-                    {
-                        isLoggedIn && <li className="nav-item">
-                        <Link to='/dashboard' className="nav-link">Dashboard</Link>
-                    </li>
-                    }
-                    <li className="nav-item">
-                        <Link to='/select' className="nav-link">Hire</Link>
                     </li>
                     <li className="nav-item">
                         <Link to='/buy' className="nav-link">Buy CrunchCard</Link>

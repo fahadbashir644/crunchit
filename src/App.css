@@ -8,6 +8,7 @@ body, html {
   /* Container to fill the entire viewport */
   .app-container {
     display: flex;
+    transition: 0.4s;
     flex-direction: column;
     min-height: 100vh; /* Ensures the container spans the entire viewport height */
   }
@@ -45,3 +46,15 @@ body, html {
   .app-container::-webkit-scrollbar-thumb:hover {
     background: #999 !important;
   }
+
+  .active-cont {
+    width: 85%;
+    margin-right: 0;
+  }
+  #menu-btn {
+    background-color: transparent;
+    width: 50px;
+    color: #fff;
+  }
+
+  
