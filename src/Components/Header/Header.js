@@ -35,6 +35,11 @@ function Header() {
                         <Link to='/dashboard' className="nav-link">Dashboard</Link>
                     </li>
                     {
+                        isVa ? <li className="nav-item">
+                        <Link to='/history' className="nav-link">History</Link>
+                    </li> : ''
+                    }
+                    {
                         isVa ? '': <li className="nav-item">
                         <Link to='/select' className="nav-link">Hire</Link>
                     </li>

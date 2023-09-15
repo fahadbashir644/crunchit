@@ -23,6 +23,7 @@ import axios from "axios";
 import SetService from './Components/Set-Service/Set-Service';
 import Sidebar from './Components/Sidebar/Sidebar';
 import { FaAngleRight, FaAngleLeft } from 'react-icons/fa6';
+import History from './Components/History/History';
 
 const HireContext = createContext();
 
@@ -43,6 +44,7 @@ function App() {
     const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
     const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('isAdmin') ? sessionStorage.getItem('isAdmin') : false);
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
+    const [isActive, setIsActive] = useState(sessionStorage.getItem('email') ? true : false);
 
     const contextValue = {
         hourlyRate,
@@ -68,10 +70,9 @@ function App() {
         isVa,
         setIsVa,
         isAdmin,
-        setIsAdmin
+        setIsAdmin,
+        setIsActive
     };
-
-    const [isActive, setIsActive] = useState(true);
 
   const toggleSidebar = () => {
     setIsActive(!isActive);
@@ -81,12 +82,11 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
       <HireContext.Provider value={contextValue}>
-      {isAdmin ? <Sidebar isActive={isActive} setIsActive={setIsActive} /> : ''}
+      {isAdmin ? <Sidebar isActive={isActive} setIsActive={setIsActive} /> : '' }
       <div className={`app-container ${isActive ? 'active-cont' : ''}`}>
       {isAdmin ?
       <a className="btn border-0" id="menu-btn" onClick={toggleSidebar}>
         {isActive ? <FaAngleLeft /> : <FaAngleRight />}
-          {/* <i className={`bx ${isActive ? 'bx-arrow-left' : 'bx-menu'}`}></i> */}
         </a> : ''}
         {!isAdmin ? <Header /> : ''}
             <Routes>
@@ -104,6 +104,7 @@ function App() {
               <Route path="/virtualAssistants" element={<VirtualAssistants />} />
               <Route path="/setHourlyRate" element={<SetHourlyRate />} />
               <Route path="/setService" element={<SetService />} />
+              <Route path="/history" element={<History />} />
             </Routes>
         <Footer />
       </div>

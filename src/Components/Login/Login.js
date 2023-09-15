@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance, setIsVa, setIsAdmin} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -41,9 +41,16 @@ const LoginPage = () => {
       sessionStorage.setItem('token', response.data.token);
       setBalance(response.data.user.balance);
       setIsAdmin(response.data.user.isAdmin);
+      if (response.data.user?.isAdmin) {
+        setIsActive(true);
+      }
       navigate('/dashboard');
     }).catch((error) => {
-      toast.error("Incorrect Email/Password");
+      if (error.response.status === 400) {
+        toast.error("Incorrect Email/Password");
+      } else {
+        toast.error("Email does not exists");
+      }
     });
   };
 

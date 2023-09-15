@@ -9,7 +9,7 @@ import { useHireContext } from '../../App';
 const Sidebar = ({isActive, setIsActive}) => {
 
   const {setIsLoggedIn} = useAuth();
-  const {setIsAdmin, setIsVa} = useHireContext();
+  const {setIsAdmin, setIsVa, isAdmin, isVa} = useHireContext();
   const handleLogout = () => {
       localStorage.clear();
       sessionStorage.clear();
@@ -30,6 +30,8 @@ const Sidebar = ({isActive, setIsActive}) => {
         <FaBattleNet />
         <span className="mx-2">Dashboard</span>
       </Link>
+      {isAdmin ?
+      <>
       <Link to="/hiringRequests" className="nav-link">
         <FaCodePullRequest />
         <span className="mx-2">Hiring Requests</span>
@@ -45,8 +47,27 @@ const Sidebar = ({isActive, setIsActive}) => {
       <Link to="/setService" className="nav-link">
         <FaServicestack />
         <span className="mx-2">Set Service</span>
-      </Link>
-      <Link to='/' onClick={handleLogout} className="mt-4 btn btn-secondary">
+      </Link></> :
+      isVa ? 
+      <Link to="/history" className="nav-link">
+      <FaCodePullRequest />
+      <span className="mx-2">History</span>
+    </Link> : 
+    <>
+    <Link to="/" className="nav-link">
+      <FaCodePullRequest />
+      <span className="mx-2">Home</span>
+    </Link>
+    <Link to="/select" className="nav-link">
+      <FaUsersGear />
+      <span className="mx-2">Hire</span>
+    </Link>
+    <Link to="/buy" className="nav-link">
+      <FaCircleDollarToSlot />
+      <span className="mx-2">Buy CrunchCard</span>
+    </Link></>
+      }
+      <Link to='/' onClick={handleLogout} className="mt-4 btn btn-secondary logout-btn">
         Logout
       </Link>
     </ul>

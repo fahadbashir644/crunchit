@@ -18,12 +18,6 @@ const VaDashboard = () => {
   const [newMessageAlert, setNewMessageAlert] = useState(false);
   const [highlightedSender, setHighlightedSender] = useState(null);
   const {isLoggedIn} = useAuth();
-  const [projects, setProjects] = useState([
-    { name: 'Project 1', date: 'July 1, 2023', status: 'Completed' },
-    { name: 'Project 2', date: 'June 15, 2023', status: 'In Progress' },
-    // Add more projects as needed
-  ]);
-  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [currentSessionStartTime, setCurrentSessionStartTime] = useState(null);
 
   // State for the countdown time (remaining time)
@@ -86,10 +80,6 @@ const VaDashboard = () => {
       setCountdownTime(null);
       setCurrentSessionStartTime(null);
     }
-  };
-
-  const toggleHistory = () => {
-    setIsHistoryExpanded(!isHistoryExpanded);
   };
 
   useEffect(() => {
@@ -193,28 +183,6 @@ const VaDashboard = () => {
               </div>
             </div>
             </div>
-            <div className="row">
-                <div className={`col-md-3 customer-history ${isHistoryExpanded ? 'expanded' : ''}`}>
-                  <button className="btn btn-primary mb-4" onClick={toggleHistory}>
-                    {isHistoryExpanded ? 'Hide History' : 'Show History'}
-                  </button>
-                  {isHistoryExpanded && (
-                    <ul className="list-group">
-                      {projects.map((project, index) => (
-                        <li className="list-group-item" key={index}>
-                        <div className="project-info">
-                          <span className="project-name">{project.name}</span>
-                          <span className={`project-status ${project.status.toLowerCase()}`}>
-                            {project.status}
-                          </span>
-                        </div>
-                        <div className="project-date">Date: {project.date}</div>
-                      </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
             <div className="row mt-8 va-chat p-4">
             <div className="col-md-3">
               <UserList users={users} handleUserClick={handleUserClick}

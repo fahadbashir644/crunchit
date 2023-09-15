@@ -100,17 +100,18 @@ app.post("/login", (req, res) => {
       email: req.body.data.email,
     }).then((user) => {
       if (user) {
-        console.log(user);
         bcrypt.compare(req.body.data.password, user.password, (err, response) => {
           if (response) {
             const token = jwt.sign({ userId: user._id }, "jwtToken", {
               expiresIn: "1h",
             });
             res.status(200).send({ user, token });
+          } else {
+            res.status(400).send("Incorrect email or password");
           }
-        });
+        })
       } else {
-        res.status(400).send("User does not exist");
+        res.status(404).send("User does not exist");
       }
     });
 });

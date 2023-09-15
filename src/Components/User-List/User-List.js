@@ -3,7 +3,7 @@ import React from 'react';
 const UserList = ({ users, handleUserClick, highlightedSender }) => {
   return (
     <div className="user-list">
-      <ul className="list-group">
+      <ul className="list-group" style={{ width: '100% '}}>
         {users.map((user) => (
           // <li
           //   style={{ border: '1px solid #222', backgroundColor: highlightedSender === user.name ? '#ffc107' : 'transparent' }}
