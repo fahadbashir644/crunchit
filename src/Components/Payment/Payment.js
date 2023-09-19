@@ -31,7 +31,7 @@ const PaymentPage = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
@@ -65,7 +65,7 @@ const PaymentPage = () => {
             totalHours: totalHours,
             workingHours: hours
           };
-          axios.post("http://localhost:8000/pay", data).then((res) => {   
+          axios.post("http://137.184.81.218:8000/pay", data).then((res) => {   
             if (res) {
                 toast.success('Payment Successful');
                 setTotalPrice(0);

@@ -34,7 +34,7 @@ const VaDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getSubscriptionsOfVa", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getSubscriptionsOfVa", data).then((res) => {   
         if (res) {
           setActiveSubscriptions(res.data.subscriptions);
         } 
@@ -86,7 +86,7 @@ const VaDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getAvailability", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getAvailability", data).then((res) => {   
         if (res) {
           setIsAvailable(res.data.available);
         } 
@@ -105,7 +105,7 @@ const VaDashboard = () => {
     const data = {
       va: email,
     };
-    axios.post("http://localhost:8000/getRelatedUsers", data).then((res) => {   
+    axios.post("http://137.184.81.218:8000/getRelatedUsers", data).then((res) => {   
       if (res) {
           setUsers(res.data.users);
       } 
@@ -113,7 +113,7 @@ const VaDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8000');
+    const newSocket = io('http://137.184.81.218:8000');
     setSocket(newSocket);
 
     return () => {
@@ -138,7 +138,7 @@ const VaDashboard = () => {
       email: email,
       available: !isAvailable,
     };
-    axios.post("http://localhost:8000/changeAvailability", data).then((res) => {   
+    axios.post("http://137.184.81.218:8000/changeAvailability", data).then((res) => {   
       if (res) {
       } 
     });

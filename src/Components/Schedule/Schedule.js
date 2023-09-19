@@ -25,7 +25,7 @@ const SchedulePage = ({ onNext, onBack }) => {
   } = useHireContext();
 
   useEffect(() => {
-    axios.get("http://localhost:8000/getHourlyRate").then((res) => {   
+    axios.get("http://137.184.81.218:8000/getHourlyRate").then((res) => {   
       if (res) {
         setHourlyRate(res.data.hourlyRate);
       } 

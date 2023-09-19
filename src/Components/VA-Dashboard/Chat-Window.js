@@ -15,7 +15,7 @@ const ChatWindow = ({ selectedUser, socket }) => {
         receiver: selectedUser.email,
       };
       axios
-        .post('http://localhost:8000/getMessages', data)
+        .post('http://137.184.81.218:8000/getMessages', data)
         .then((response) => {
           setChatMessages(response.data);
         })

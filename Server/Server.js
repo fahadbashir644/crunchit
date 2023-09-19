@@ -21,7 +21,7 @@ const saltrounds = 2;
 
 const socketIO = require('socket.io')(http, {
   cors: {
-      origin: "http://localhost:3000"
+      origin: "http://137.184.81.218:3000"
   }
 });
 

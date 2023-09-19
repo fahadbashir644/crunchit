@@ -37,7 +37,7 @@ const CustomerDashboard = () => {
         const data = {
           email: email,
         };
-        axios.post("http://localhost:8000/getSubscriptionsOfUser", data).then((res) => {   
+        axios.post("http://137.184.81.218:8000/getSubscriptionsOfUser", data).then((res) => {   
           if (res) {
             setActiveSubscriptions(res.data.subscriptions);
           } 
@@ -89,7 +89,7 @@ const CustomerDashboard = () => {
       const data = {
         client: email,
       };
-      axios.post("http://localhost:8000/getRelatedVas", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -97,7 +97,7 @@ const CustomerDashboard = () => {
     }, [activeSubscriptions]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8000');
+    const newSocket = io('http://137.184.81.218:8000');
     setSocket(newSocket);
 
     return () => {
@@ -118,7 +118,7 @@ const CustomerDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
@@ -142,7 +142,7 @@ const CustomerDashboard = () => {
   };
 
   const handleTopUp = () => {
-        axios.post("http://localhost:8000/topup", {
+        axios.post("http://137.184.81.218:8000/topup", {
         header: { "Content-Type": "application/json" },
         data : JSON.stringify({
             price_amount: topup,
