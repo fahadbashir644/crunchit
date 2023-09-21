@@ -24,6 +24,7 @@ const PaymentPage = () => {
     customService,
     setCustomService,
     setTotalPrice,
+    selectedTimezone
     } = useHireContext();
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const PaymentPage = () => {
       const data = {
         email: email,
       };
-      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
+      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
@@ -61,17 +62,19 @@ const PaymentPage = () => {
           const data = {
             email: email,
             price: totalPrice,
-            selectedService: selectedService ?? customService,
+            selectedService: selectedService.name ?? customService,
             totalHours: totalHours,
-            workingHours: hours
+            workingHours: hours,
+            timezone: selectedTimezone.value
           };
-          axios.post("http://137.184.81.218:8000/pay", data).then((res) => {   
+          axios.post("http://localhost:8000/pay", data).then((res) => {   
             if (res) {
                 toast.success('Payment Successful');
                 setTotalPrice(0);
                 setWorkingHours(new Map());
                 setSelectedService('');
                 setCustomService('');
+                setBalance(res.data.balance);
                 navigate('/enquiry');
             } else {
               toast.error('Payment failed');
@@ -109,7 +112,7 @@ const PaymentPage = () => {
         </div>
         <div className="d-flex justify-content-center mt-6">
           <Link to='/summary' className="btn btn-secondary">Back</Link>
-          <Link to='/enquiry' className="btn btn-primary">Next</Link>
+          <Link to={customService ? '/enquiry' : '/purchase'} className="btn btn-primary">Next</Link>
         </div>
     </div>
   );

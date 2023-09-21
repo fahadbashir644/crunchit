@@ -17,13 +17,15 @@ import CustomerDashboard from './Components/Customer-Dashboard/Customer-Dashboar
 import VaDashboard from './Components/VA-Dashboard/VA-Dashboard';
 import HiringRequests from './Components/Hiring-Requests/Hiring-Requests';
 import VirtualAssistants from './Components/Virtual-Assistants/Virtual-Assistants';
-import SetHourlyRate from './Components/Set-Hourly-Rate/Set-Hourly-Rate';
 import AdminDashboard from './Components/Admin-Dashboard/Admin-Dashboard';
 import axios from "axios";
 import SetService from './Components/Set-Service/Set-Service';
 import Sidebar from './Components/Sidebar/Sidebar';
 import { FaAngleRight, FaAngleLeft } from 'react-icons/fa6';
 import History from './Components/History/History';
+import BuyCrunchcard from './Components/Buy-Crunchcard/Buy-Crunchcard';
+import Finance from './Components/Finance/Finance';
+import Settings from './Components/Settings/Settings';
 
 const HireContext = createContext();
 
@@ -39,12 +41,15 @@ function App() {
     const [isOrientationRequired, setIsOrientationRequired] = useState(false);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
-    const [balance, setBalance] = useState(0);
+    const [balance, setBalance] = useState(sessionStorage.getItem('balance') ? sessionStorage.getItem('balance') : 0);
     const [hourlyRate, setHourlyRate] = useState(0);
     const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
     const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('isAdmin') ? sessionStorage.getItem('isAdmin') : false);
+    const [name, setName] = useState(sessionStorage.getItem('name') ? sessionStorage.getItem('name') : false);
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
-    const [isActive, setIsActive] = useState(sessionStorage.getItem('email') ? true : false);
+    const [isActive, setIsActive] = useState(sessionStorage.getItem('isAdmin') ? true : false);
+    const [selectedTimezone, setSelectedTimezone] = useState(null);
+    const [vaRate, setVaRate] = useState(sessionStorage.getItem('vaRate') ? sessionStorage.getItem('vaRate') : 0);
 
     const contextValue = {
         hourlyRate,
@@ -71,7 +76,13 @@ function App() {
         setIsVa,
         isAdmin,
         setIsAdmin,
-        setIsActive
+        setIsActive,
+        setSelectedTimezone,
+        selectedTimezone,
+        name,
+        setName,
+        vaRate,
+        setVaRate
     };
 
   const toggleSidebar = () => {
@@ -102,9 +113,11 @@ function App() {
               <Route path="/dashboard" element={ isVa ? <VaDashboard /> : isAdmin ? <AdminDashboard /> : <CustomerDashboard />} />
               <Route path="/hiringRequests" element={<HiringRequests />} />
               <Route path="/virtualAssistants" element={<VirtualAssistants />} />
-              <Route path="/setHourlyRate" element={<SetHourlyRate />} />
               <Route path="/setService" element={<SetService />} />
               <Route path="/history" element={<History />} />
+              <Route path="/buyCrunchcard" element={<BuyCrunchcard />} />
+              <Route path="/transactions" element={<Finance />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
         <Footer />
       </div>

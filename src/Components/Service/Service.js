@@ -31,11 +31,13 @@ const {
   selectedService,
   setSelectedService,
   customService,
-  setCustomService
+  setCustomService,
+  setWorkingHours,
+  setTotalPrice
 } = useHireContext();
 
 useEffect(() => {
-  axios.get("http://137.184.81.218:8000/getAllServices").then((res) => {   
+  axios.get("http://localhost:8000/getAllServices").then((res) => {   
     if (res) {
       setServices(res.data.services);
     } 
@@ -43,7 +45,16 @@ useEffect(() => {
 }, []);
 
   const handleServiceChange = (event) => {
-    setSelectedService(event.target.value);
+    let service = services.find((service) => service.name === event.target.value);
+    if(!service) {
+      service = {
+        name: 'Other',
+        rate: 0
+      };
+    }
+    setSelectedService(service);
+    setWorkingHours(new Map());
+    setTotalPrice(0);
   };
 
   const handleCustomServiceChange = (event) => {
@@ -58,20 +69,20 @@ useEffect(() => {
               <select
               className="form-control"
               id="serviceSelect"
-              value={selectedService}
+              value={selectedService.name}
               style={{width: "50%"}}
-              onChange={handleServiceChange}
+              onChange={(e) => handleServiceChange(e)}
               >
               <option value="">Select...</option>
               {services.map((service, index) => (
-                  <option key={index} value={service}>
-                  {service}
+                  <option key={index} value={service.name}>
+                  {service.name}
                   </option>
               ))}
               <option value="Other">Other</option>
               </select>
           </div>
-          {selectedService === 'Other' && (
+          {selectedService.name === 'Other' && (
               <div className="mt-4 form-group">
               <label htmlFor="customServiceInput">Custom Service:</label>
               <input

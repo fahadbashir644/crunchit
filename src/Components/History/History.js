@@ -11,7 +11,7 @@ const History = () => {
     const data = {
         email: email
     }
-    axios.post("http://137.184.81.218:8000/getSubscriptionsOfVa", data).then((res) => {   
+    axios.post("http://localhost:8000/getSubscriptionsOfVa", data).then((res) => {   
       if (res) {
         setSubscriptions(res.data.subscriptions);
       } 
@@ -37,7 +37,7 @@ const History = () => {
           </thead>
           <tbody>
             {subscriptions.map((subscription, index) => (
-              <tr key={subscription.id}>
+              <tr key={subscription._id}>
                 <td style={{ border: 'none', textAlign: 'center' }}>{index + 1}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.client}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.service}</td>

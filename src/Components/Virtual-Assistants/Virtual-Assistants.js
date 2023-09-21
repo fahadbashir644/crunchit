@@ -6,7 +6,7 @@ const VirtualAssistants = () => {
   const [virtualAssistants, setVirtualAssistants] = useState([]);
 
   useEffect(() => {
-    axios.get('http://137.184.81.218:8000/getAllVas').then((res) => {
+    axios.get('http://localhost:8000/getAllVas').then((res) => {
       if (res) {
         setVirtualAssistants(res.data.vas);
       }
@@ -18,7 +18,7 @@ const VirtualAssistants = () => {
       va: selectedVaId,
       vaRate: rate
     };
-    axios.post("http://137.184.81.218:8000/setRateOfVa", data).then((res) => {   
+    axios.post("http://localhost:8000/setRateOfVa", data).then((res) => {   
       if (res) {
         toast.success('Successfully Updated Rate of VA');
       } 
@@ -35,7 +35,7 @@ const VirtualAssistants = () => {
     <div className="container mt-5">
       <h3 style={{ color: 'rgb(102 99 99)' }}>Virtual Assistants</h3>
       <div className="table-responsive mt-4">
-        <table className="table table-striped">
+        <table className="table cstm-table">
           <thead style={{ backgroundColor: '#141414' }}>
             <tr>
               <th style={{ border: 'none' }}>#</th>

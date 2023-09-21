@@ -40,10 +40,6 @@ const Sidebar = ({isActive, setIsActive}) => {
         <FaUsersGear />
         <span className="mx-2">Virtual Assistants</span>
       </Link>
-      <Link to="/setHourlyRate" className="nav-link">
-        <FaCircleDollarToSlot />
-        <span className="mx-2">Set Hourly Rate</span>
-      </Link>
       <Link to="/setService" className="nav-link">
         <FaServicestack />
         <span className="mx-2">Set Service</span>

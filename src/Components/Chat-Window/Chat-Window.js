@@ -20,7 +20,7 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
         sender: email,
         receiver: selectedUser.email
       };
-      axios.post('http://137.184.81.218:8000/getMessages', data)
+      axios.post('http://localhost:8000/getMessages', data)
         .then(response => {
           setChatMessages(response.data);
         })
@@ -74,7 +74,7 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
         workingHours: currentSubscription.totalHours,
         balance: selectedUser.balance
       };
-      axios.post('http://137.184.81.218:8000/completeProject', data)
+      axios.post('http://localhost:8000/completeProject', data)
         .then(response => {
           setActiveSubscriptions(response.data.subscriptions);
           setSelectedUser(null);
@@ -88,9 +88,10 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
 
   return (
     <>
+    {selectedUser.isVa ? 
     <div className="chat-header mb-4">
         <button onClick={handleCompleteClick} className="btn btn-primary">Complete</button>
-      </div>
+    </div> : ''}
     <div className='chat-window'>
       <div className={`chat-content ${isExpanded ? 'expanded' : ''}`}>
       <div className="chat-header mb-4">

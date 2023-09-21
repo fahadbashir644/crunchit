@@ -6,11 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const SetService = () => {
   const [services, setServices] = useState([]);
-
   const [newService, setNewService] = useState('');
+  const [newServiceRate, setNewServiceRate] = useState('');
 
   useEffect(() => {
-    axios.get("http://137.184.81.218:8000/getAllServices").then((res) => {   
+    axios.get("http://localhost:8000/getAllServices").then((res) => {   
       if (res) {
         setServices(res.data.services);
       } 
@@ -18,14 +18,16 @@ const SetService = () => {
   }, []);
 
   const handleAddService = () => {
-    if (newService.trim() !== '') {
+    if (newService.trim() !== '' && newServiceRate.trim() !== '') {
       const data = {
         service: newService,
+        rate: newServiceRate,
       };
-      axios.post("http://137.184.81.218:8000/addService", data).then((res) => {
+      axios.post("http://localhost:8000/addService", data).then((res) => {
         if (res) {
-          setServices([...services, newService]);
+          setServices([...services, res.data]);
           setNewService('');
+          setNewServiceRate('');
           toast.success('Successfully Added New Service');
         }
       }).catch((error) => {
@@ -34,7 +36,9 @@ const SetService = () => {
         } else {
           toast.error('Something went wrong!');
         }
-      })
+      });
+    } else {
+      toast.error('Please enter all fields of new service');
     }
   };
 
@@ -42,9 +46,9 @@ const SetService = () => {
     const data = {
       service: serviceToRemove,
     };
-    axios.post("http://137.184.81.218:8000/removeService", data).then((res) => {   
+    axios.post("http://localhost:8000/removeService", data).then((res) => {   
       if (res) {
-        const updatedServices = services.filter((service) => service !== serviceToRemove);
+        const updatedServices = services.filter((service) => service.name !== serviceToRemove);
         setServices(updatedServices);
         toast.success('Successfully Removed Service');
       } else {
@@ -53,42 +57,100 @@ const SetService = () => {
     });
   };
 
+  const handleSetRate = (service) => {
+    const data = {
+      service: service._id,
+      rate: service.rate,
+    };
+    axios.post("http://localhost:8000/setServiceRate", data).then((res) => {
+      if (res) {
+        toast.success(`Rate for ${service.name} updated successfully`);
+      } else {
+        toast.error('Something went wrong!');
+      }
+    });
+  };
+
+  const handleRateChange = (index, event) => {
+    const newServices = [...services];
+    newServices[index].rate = event.target.value;
+    setServices(newServices);
+  };
+
   return (
     <div className="container d-flex-column mt-5">
       <div className="dashboard-header d-flex-row">
-      <h3 style={{ color: 'rgb(102 99 99)' }}>Add New Service</h3>
+        <h3 style={{ color: 'rgb(102 99 99)' }}>Add New Service</h3>
       </div>
       <div className="mb-3 d-flex-row">
         <div className="input-group">
           <input
             type="text"
-            className="form-control"
+            className="form-control mr-3 service-input margin-r"
             id="newService"
+            placeholder="Service Name"
             value={newService}
             onChange={(e) => setNewService(e.target.value)}
           />
-          <button className="btn btn-primary" onClick={handleAddService}>
+          <input
+            type="number"
+            min='0'
+            className="form-control mr-3 margin-r"
+            id="newServiceRate"
+            placeholder="Rate"
+            value={newServiceRate}
+            onChange={(e) => setNewServiceRate(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={()=> handleAddService()}>
             Add
           </button>
         </div>
       </div>
       <div className="mt-4 d-flex-row">
-      <h4 style={{ color: 'rgb(102 99 99)' }}>Existing Services</h4>
-        <ul className="list-group">
+        <h4 style={{ color: 'rgb(102 99 99)' }}>Existing Services</h4>
+        <table className="table services-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Service</th>
+            <th>Rate</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
           {services.map((service, index) => (
-            <div>
-            <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-            {service}
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleRemoveService(service)}
+            <tr key={index}>
+              <td>{index+1}</td>
+              <td>{service.name}</td>
+              <td className='cstm-dflex'>
+                <input
+                  type="number"
+                  className="form-control"
+                  min='0'
+                  placeholder="Service Rate"
+                  style={{width: '100px'}}
+                  value={service.rate || 0}
+                  onChange={(e) => handleRateChange(index, e)}
+                />
+              </td>
+              <td>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleRemoveService(service.name)}
+                >
+                  Remove
+                </button>
+                <button
+                className="btn btn-primary btn-sm ml-2"
+                onClick={() => handleSetRate(service)}
               >
-                Remove
+                Set Rate
               </button>
-            </li>
-            </div>
+              </td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
       </div>
     </div>
   );

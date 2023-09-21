@@ -57,4 +57,15 @@ body, html {
     color: #fff;
   }
 
-  
+  .balance-div {
+    display: flex;
+    justify-content: flex-start;
+    width: 95%;
+    margin-top: 10px;
+    margin-left: 10px; 
+  }
+
+  .balance-div span{
+    padding: 10px;
+    background-color: #222;
+  }

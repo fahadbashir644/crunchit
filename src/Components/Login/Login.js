@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive, setName, setVaRate} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -22,7 +22,7 @@ const LoginPage = () => {
     }
  
     axios
-    .post("http://137.184.81.218:8000/login", {
+    .post("http://localhost:8000/login", {
       header: { "Content-Type": "application/json" },
       data: {
         email: email,
@@ -37,10 +37,15 @@ const LoginPage = () => {
         sessionStorage.setItem('isAdmin', response.data.user.isAdmin);
       } else if (response.data.user.isVa) {
         sessionStorage.setItem('isVa', response.data.user.isVa);
+        sessionStorage.setItem('vaRate', response.data.user.vaRate);
+        setVaRate(response.data.user.vaRate);
       }
       sessionStorage.setItem('token', response.data.token);
+      sessionStorage.setItem('name', response.data.user.name);
+      sessionStorage.setItem('balance', response.data.user.balance);
       setBalance(response.data.user.balance);
       setIsAdmin(response.data.user.isAdmin);
+      setName(response.data.user.name);
       if (response.data.user?.isAdmin) {
         setIsActive(true);
       }

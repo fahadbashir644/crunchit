@@ -97,3 +97,8 @@ thead th {
   display: flex;
   justify-content: space-between;
 }
+
+.cstm-col-flex {
+  display: flex;
+  flex-direction: column;
+}

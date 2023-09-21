@@ -16,12 +16,13 @@ const Message = require("./Models/Message");
 const Subscription = require("./Models/Subscription");
 const hourlyRate = require("./Models/hourlyRate");
 const Service = require("./Models/Service");
+const Transaction = require("./Models/Transaction");
 const bcrypt = require("bcrypt");
 const saltrounds = 2;
 
 const socketIO = require('socket.io')(http, {
   cors: {
-      origin: "http://137.184.81.218:3000"
+      origin: "http://localhost:3000"
   }
 });
 
@@ -116,6 +117,17 @@ app.post("/login", (req, res) => {
     });
 });
 
+function getCurrentDate() {
+  const currentDate = new Date();
+
+  const day = currentDate.getDate().toString().padStart(2, '0');
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const year = currentDate.getFullYear();
+
+  const formattedDate = `${day}/${month}/${year}`;
+  return formattedDate;
+}
+
 app.post("/signup", (req, res) => {
     User.findOne({
         email: req.body.data.email,
@@ -170,12 +182,83 @@ app.post("/ipn", (req, res) => {
           { email: email },
           { balance: Number(req.body.payment_amount) + Number(res2.balance) }
         ).then((result) => {
-          console.log("updated");
+          const transaction = new Transaction({
+            _id: new Types.ObjectId(),
+            user: email,
+            type: 'Topup',
+            balanceBefore: Number(res2.balance),
+            balanceAfter: Number(req.body.payment_amount) + Number(res2.balance),
+            status: 'Complete',
+            date: getCurrentDate(),
+            totalAmount: Number(req.body.payment_amount)
+          });
+          transaction.save()
+          .then((result) => {
+            const data = {
+              email: email,
+              balance: Number(req.body.payment_amount) + Number(res2.balance)
+            };
+            socketIO.emit('updateBalance', data);
+            res.status(200).send();
+          })
+          .catch((saveError) => {
+            console.error("Error saving transaction:", saveError);
+            res.status(400).send("Error saving transaction");
+          });  
         })
       }
     });
   }
-  res.json({ status: 200 });
+});
+
+app.post("/testipn", (req, res) => {
+    let email = req.body.order_description;
+    console.log(req.body);
+    console.log(email);
+    User.findOne({
+      email: email,
+    }).then((res2) => {
+      console.log('res2', res2);
+      if (res2) {
+        User.findOneAndUpdate(
+          { email: email },
+          { balance: Number(req.body.payment_amount) + Number(res2.balance) }
+        ).then((result) => {
+          console.log('result');
+          const transaction = new Transaction({
+            _id: new Types.ObjectId(),
+            user: email,
+            type: 'Topup',
+            balanceBefore: Number(res2.balance),
+            balanceAfter: Number(req.body.payment_amount) + Number(res2.balance),
+            status: 'Complete',
+            date: getCurrentDate(),
+            totalAmount: Number(req.body.payment_amount)
+          });
+          transaction.save()
+          .then((result2) => {
+            console.log('result2');
+            const data = {
+              email: email,
+              balance: Number(req.body.payment_amount) + Number(res2.balance)
+            };
+            console.log('testipn', data);
+            socketIO.emit('updateBalance', data);
+            res.status(200).send();
+          })
+          .catch((saveError) => {
+            console.error("Error saving transaction:", saveError);
+            res.status(400).send("Error saving transaction");
+          });  
+        }).catch((saveError) => {
+          console.error("Error saving user:", saveError);
+          res.status(400).send("Error saving user");
+        });  
+      }
+    }).catch((saveError) => {
+      console.error("User not found:", saveError);
+      res.status(400).send("User not found");
+    });  
 });
 
 app.post('/topup', async (req, res) => {
@@ -229,6 +312,7 @@ app.post("/addService", (req, res) => {
       const service = new Service({
         _id: new Types.ObjectId(),
         name: req.body.service,
+        rate: req.body.rate
       });
       service.save()
       .then((result) => {
@@ -251,8 +335,7 @@ app.post("/removeService", (req, res) => {
 app.get("/getAllServices", (req, res) => {
   Service.find({}).then((res2) => {
     if (res2) {
-      let services = res2.map(service => service['name']);
-      res.send({ services: services });
+      res.send({ services: res2 });
     }
   });
 });
@@ -269,6 +352,30 @@ app.post("/changeAvailability", (req, res) => {
         res.status(200).send();
       }).catch((error) => {
           res.status(400).send(error);
+      });
+    }
+  });
+});
+
+app.post("/changePassword", (req, res) => {
+  User.findOne({
+    email: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      bcrypt.hash(req.body.password, saltrounds, (err, hash) => {
+        if (err) {
+          console.error('err2', err);
+          res.status(400).send(err);
+        } else {
+          User.findOneAndUpdate(
+            { email: req.body.email },
+            { password: hash }
+          ).then((result) => {
+            res.status(200).send();
+          }).catch((error) => {
+              res.status(400).send(error);
+          });   
+        }
       });
     }
   });
@@ -319,6 +426,23 @@ app.post("/setRateOfVa", (req, res) => {
   });
 });
 
+app.post("/setServiceRate", (req, res) => {
+  Service.findOne({
+    _id: req.body.service
+  }).then((res2) => {
+    if (res2) {
+      Service.findOneAndUpdate(
+        { _id: req.body.service },
+        { rate: Number(req.body.rate) }
+      ).then((result) => {
+        res.status(200).send();
+      }).catch((error) => {
+          res.status(400).send(error);
+      });
+    }
+  });
+});
+
 app.post("/getSubscriptionsOfUser", (req, res) => {
   Subscription.find({
     client: req.body.email,
@@ -336,6 +460,16 @@ app.post("/getSubscriptionsOfVa", (req, res) => {
   }).then((res2) => {
     if (res2) {
       res.send({ subscriptions: res2 });
+    }
+  });
+});
+
+app.post("/getTransactions", (req, res) => {
+  Transaction.find({
+    user: req.body.email
+  }).then((res2) => {
+    if (res2) {
+      res.send({ transactions: res2 });
     }
   });
 });
@@ -489,11 +623,29 @@ app.post("/pay", (req, res) => {
           paymentStatus: 'paid',
           vaStatus: 'not-assigned',
           projectStatus: 'pending',
-          workingHours: req.body.workingHours
+          workingHours: req.body.workingHours,
+          timezone: req.body.timezone
         });
         subscription.save()
-        .then((result) => {
-            res.status(200).send(result);
+        .then((result2) => {
+          const transaction = new Transaction({
+            _id: new Types.ObjectId(),
+            user: req.body.email,
+            type: 'Subscription',
+            balanceBefore: Number(res2.balance),
+            balanceAfter: Number(res2.balance) - Number(req.body.price),
+            status: 'Complete',
+            date: getCurrentDate(),
+            totalAmount: Number(req.body.price)
+          });
+          transaction.save()
+          .then((result) => {
+              res.status(200).send({balance: Number(res2.balance) - Number(req.body.price)});
+          })
+          .catch((saveError) => {
+            console.error("Error saving transaction:", saveError);
+            res.status(400).send("Error saving transaction");
+          });  
         })
         .catch((saveError) => {
           console.error("Error saving subscription:", saveError);

@@ -7,3 +7,11 @@
     width: 86%;
     object-fit: cover;
   }
+  .banner-div-1 img{
+    width: 27rem;
+}
+@media (max-width: 967px) {
+.banner-div-1 img{
+    width: 20rem;
+}
+}

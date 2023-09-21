@@ -10,6 +10,7 @@ const SummaryPage = () => {
     selectedService,
     customService,
     totalPrice,
+    selectedTimezone
   } = useHireContext();
 
   const totalHours = useMemo(() => {
@@ -30,7 +31,8 @@ const SummaryPage = () => {
   return (
     <div className="summary-container">
       <h2 className='cstm-h2'>Summary</h2>
-      <p>Selected Service: {selectedService === 'Other' ? customService : selectedService}</p>
+      <p>Selected Service: {selectedService?.name === 'Other' ? customService : selectedService?.name}</p>
+      <p>Selected Timezone: {selectedTimezone?.value}</p>
       <p>Working Hours: {totalHours}</p>
       <p>Total Price: ${totalPrice}</p>
 

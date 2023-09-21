@@ -25,7 +25,7 @@ function Main() {
                         </div>
                     </div>
                     <div className="col-xl-5 offset-xl-2 col-md-5 offset-md-1 col-lg-5 offset-lg-1  col-12">
-                        <div className="position-relative">
+                        <div className="position-relative banner-div-1">
                         <img src={bannerVideo} alt='' style={{height:'230px'}}/>
                         </div>
                     </div>

@@ -1,14 +1,17 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Schedule.css';
 import { useHireContext } from '../../App.js';
 import {Link} from 'react-router-dom';
 import axios from "axios";
+import Select from 'react-select';
+import tzIds from 'tz-ids';
 
 const SchedulePage = ({ onNext, onBack }) => {
 
   const {
+    selectedService,
     customService,
     workingHours,
     setWorkingHours,
@@ -20,17 +23,15 @@ const SchedulePage = ({ onNext, onBack }) => {
     setSelectedTimeFrame,
     totalPrice,
     setTotalPrice,
-    hourlyRate,
-    setHourlyRate
+    selectedTimezone,
+    setSelectedTimezone
   } = useHireContext();
 
-  useEffect(() => {
-    axios.get("http://137.184.81.218:8000/getHourlyRate").then((res) => {   
-      if (res) {
-        setHourlyRate(res.data.hourlyRate);
-      } 
-    });
-  }, []);
+  // Fetch all timezone options using tz-ids
+  const allTimezones = tzIds.map((tzId) => ({
+    value: tzId,
+    label: tzId,
+  }));
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -49,6 +50,7 @@ const SchedulePage = ({ onNext, onBack }) => {
     currentDate = formatDate(currentDate);
     let hour = Number(event.currentTarget.closest('tr').id);
     let price = totalPrice;
+    let hourlyRate = selectedService.rate;
     if (updatedWorkingHours.has(currentDate)) {
       let hours = updatedWorkingHours.get(currentDate);
       if (!hours.includes(hour)) {
@@ -129,9 +131,18 @@ const SchedulePage = ({ onNext, onBack }) => {
       <h2 className='cstm-h2'>Schedule</h2>
       <form>
       <div className="cstm-form-group cstm-row-flex">
-        <div>
+        <div className="cstm-col-flex">
           <label>Select Date:</label>
           <DatePicker selected={selectedDate} onChange={handleDateChange} />
+        </div>
+        <div className="cstm-form-group">
+          <label>Select Timezone:</label>
+          <Select
+            value={selectedTimezone}
+            onChange={(selectedOption) => setSelectedTimezone(selectedOption)}
+            options={allTimezones}
+            placeholder="Select timezone..."
+          />
         </div>
         <div>
           <label>Total Price: ${totalPrice}</label>
