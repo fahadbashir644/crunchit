@@ -50,14 +50,20 @@ body, html {
   .active-cont {
     width: 85%;
     margin-right: 0;
+    margin-left: 13.75rem;
   }
   #menu-btn {
     background-color: transparent;
     width: 50px;
-    color: #fff;
+    color: rgb(102 99 99);
+    margin-left: 0px;
+    z-index: 200;
   }
 
-  .balance-div {
+  .active-menu-btn {
+    margin-left: 0px !important;
+  }
+  /* .balance-div {
     display: flex;
     justify-content: flex-start;
     width: 95%;
@@ -68,4 +74,91 @@ body, html {
   .balance-div span{
     padding: 10px;
     background-color: #222;
+  } */
+
+  .balance-header {
+    position: absolute;
+    top: 0px;
+    margin-left: 20px;
+    width: 83%;
+}
+
+.balance-div {
+    display: flex;
+    float: right;
+}
+
+.home-heading {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.home-heading h4 {
+  color: rgb(102 99 99);
+}
+.add-balance-btn {
+  border: none;
+  margin-right: 10px;
+  color: white;
+  border-radius: 4px;
+}
+
+.balance-div h5{
+  color: rgb(102 99 99);
+}
+.balance-box {
+  display: flex;
+  align-items: center;
+}
+.content {
+  margin-left: 0; /* Reset the margin */
+}
+@media screen and (max-width: 1277px) {
+  .balance-header {
+      width: 95%;
   }
+}
+
+@media screen and (max-width: 938px) {
+  .balance-header {
+      width: 95%;
+  }
+}
+
+@media screen and (max-width: 738px) {
+  .balance-header {
+      width: 95%;
+  }
+  .content {
+    margin-left: 0; /* Reset the margin */
+    z-index: 100;
+    /* Add your other styles for the content area */
+  }
+  .active-cont {
+    width: 90%;
+    margin-left: 0px;
+  }
+
+  .active-menu-btn {
+    margin-left: 210px !important;
+  }
+}
+
+@media screen and (max-width: 578px) {
+  .balance-header {
+      width: 95%;
+  }
+}
+
+@media screen and (max-width: 478px) {
+  .balance-header {
+      width: 95%;
+  }
+  .home-heading {
+    margin-left: 40px;
+  }
+  .active-menu-btn {
+    margin-left: 180px !important;
+  }
+}

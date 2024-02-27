@@ -1,15 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
-import './Settings.css';
+import './Va-Settings.css';
 import {Link} from 'react-router-dom';
 
-const Settings = () => {
+const VaSettings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const {email, balance} = useHireContext();
+  const [isAvailable, setIsAvailable] = useState(true); 
+
+  useEffect(() => {
+    const data = {
+      email: email,
+    };
+    axios.post("http://137.184.81.218:8000/getAvailability", data).then((res) => {   
+      if (res) {
+        setIsAvailable(res.data.available);
+      } 
+    });
+}, []);
+
+const handleToggleAvailability = () => {
+  setIsAvailable(!isAvailable);
+  const data = {
+    email: email,
+    available: !isAvailable,
+  };
+  axios.post("http://137.184.81.218:8000/changeAvailability", data).then((res) => {   
+    if (res) {
+    } 
+  });
+};
 
   const handleChangePassword = () => {
     if (newPassword === confirmNewPassword) {
@@ -35,17 +59,33 @@ const Settings = () => {
 
   return (
     <div className="container mt-5 pass-cont">
+      <div className='row' style={{width : '100%'}}>
+      <div className="col-md-6">
+              <div className="availability-section">
+                <div className="availability-toggle">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={isAvailable}
+                      onChange={handleToggleAvailability}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                  <span className={`availability-status ${isAvailable ? 'available' : 'unavailable'}`}>
+                    {isAvailable ? 'Available' : 'Unavailable'}
+                  </span>
+                </div>
+              </div>
+            </div>
+      </div>
       <div className="row balance-header">
         <div className="col-2 p2 home-heading">
           <h4>Settings</h4>
         </div>
         <div className="col">
           <div className='p-2 balance-div'>
-          <Link to="/topup" className="add-balance-btn btn btn-secondary">
-                Topup
-              </Link>
               <div className='balance-box'> 
-                <h5>${balance}</h5>
+              <h5>Balance: ${balance}</h5>
                 </div>
           </div>
         </div>
@@ -79,4 +119,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default VaSettings;

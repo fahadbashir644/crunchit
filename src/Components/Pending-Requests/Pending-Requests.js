@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import './History.css';
+import './Pending-Requests.css';
 import axios from "axios";
 import { useHireContext } from '../../App.js';
 import {Link} from 'react-router-dom';
 
-const History = () => {
+const PendingRequests = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const {email, balance} = useHireContext();
 
@@ -12,7 +12,7 @@ const History = () => {
     const data = {
         email: email
     }
-    axios.post("http://137.184.81.218:8000/getSubscriptionsOfVa", data).then((res) => {   
+    axios.post("http://137.184.81.218:8000/getPendingRequests", data).then((res) => {   
       if (res) {
         setSubscriptions(res.data.subscriptions);
       } 
@@ -23,12 +23,15 @@ const History = () => {
     <div className="container history-container mt-5" >
       <div className="row balance-header">
         <div className="col-2 p2 home-heading">
-          <h4>History</h4>
+          <h4>Pending Requests</h4>
         </div>
         <div className="col">
-          <div className='p-2 balance-div'>
+        <div className='p-2 balance-div'>
+              <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
               <div className='balance-box'> 
-                <h5>Balance: ${balance}</h5>
+                <h5>${balance}</h5>
                 </div>
           </div>
         </div>
@@ -51,10 +54,10 @@ const History = () => {
                 <td style={{ border: 'none', textAlign: 'center' }}>{index + 1}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.client}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.service}</td>
-                <td style={{ border: 'none', textAlign: 'center' }}>{subscription.va}</td>
+                <td style={{ border: 'none', textAlign: 'center' }}>Not Assigned</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>${subscription.fee}</td>
                 <td style={{ border: 'none', textAlign: 'center' }} className={`project-status ${subscription.projectStatus.toLowerCase()}`}>
-                    {subscription.projectStatus}
+                    Pending
                 </td>
               </tr>
             ))}
@@ -65,4 +68,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default PendingRequests;

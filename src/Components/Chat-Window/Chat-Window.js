@@ -5,12 +5,12 @@ import './Chat-Window.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSender, setNewMessageAlert,  activeSubscriptions, setActiveSubscriptions }) => {
+const ChatWindow = ({ setCountdownTime, selectedUser, setSelectedUser, socket, setHighlightedSender, setNewMessageAlert,  activeSubscriptions, setActiveSubscriptions }) => {
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-  const [currentSubscription, setCurrentSubscription] = useState(activeSubscriptions?.find((item) => item.va === selectedUser?.email) || []);
+  const [currentSubscription, setCurrentSubscription] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
-  const { email } = useHireContext();
+  const { email, isVa } = useHireContext();
   const chatMessagesRef = useRef(null);
   const toggleDetailsButtonText = !isExpanded ? 'Hide Details' : 'Show Details';
 
@@ -20,13 +20,18 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
         sender: email,
         receiver: selectedUser.email
       };
-      axios.post('http://localhost:8000/getMessages', data)
+      axios.post('http://137.184.81.218:8000/getMessages', data)
         .then(response => {
           setChatMessages(response.data);
         })
         .catch(error => {
           console.error('Error fetching chat history:', error);
         });
+        if (isVa) {
+          setCurrentSubscription(activeSubscriptions?.find((item) => item.client === selectedUser?.email))
+        } else {
+          setCurrentSubscription(activeSubscriptions?.find((item) => item.va === selectedUser?.email))
+        }
     }
   }, [selectedUser]);
 
@@ -67,31 +72,31 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
 
   const handleCompleteClick = () => {
     if (currentSubscription) {
-      const data = {
-        va: currentSubscription.va,
-        _id: currentSubscription._id,
-        vaRate: selectedUser.vaRate,
-        workingHours: currentSubscription.totalHours,
-        balance: selectedUser.balance
-      };
-      axios.post('http://localhost:8000/completeProject', data)
-        .then(response => {
-          setActiveSubscriptions(response.data.subscriptions);
-          setSelectedUser(null);
-          toast.success('Subscription successfully completed');
-        })
-        .catch(error => {
-          console.error('Error fetching chat history:', error);
-        });
+      const confirmation = window.confirm('Are you sure you want to complete this project?');
+      if (confirmation) {
+        const data = {
+          va: currentSubscription.va,
+          _id: currentSubscription._id,
+          vaRate: selectedUser.vaRate,
+          workingHours: currentSubscription.totalHours,
+          balance: selectedUser.balance
+        };
+        axios.post('http://137.184.81.218:8000/completeProject', data)
+          .then(response => {
+            setActiveSubscriptions(response.data.subscriptions);
+            setSelectedUser(null);
+            setCountdownTime(null);
+            toast.success('Subscription successfully completed');
+          })
+          .catch(error => {
+            console.error('Error fetching chat history:', error);
+          });
+      }
     }
   };
 
   return (
     <>
-    {selectedUser.isVa ? 
-    <div className="chat-header mb-4">
-        <button onClick={handleCompleteClick} className="btn btn-primary">Complete</button>
-    </div> : ''}
     <div className='chat-window'>
       <div className={`chat-content ${isExpanded ? 'expanded' : ''}`}>
       <div className="chat-header mb-4">
@@ -125,8 +130,10 @@ const ChatWindow = ({ selectedUser, setSelectedUser, socket, setHighlightedSende
       </div>
       {!isExpanded && (
         <div className="additional-info">
-          <div className='mb-3'>Service: {currentSubscription.service}</div>
-          <div>Total Price: ${currentSubscription.fee}</div>
+          <div className='mb-3'>Service: {currentSubscription?.service}</div>
+          <div>Total Price: ${currentSubscription?.fee}</div>
+          {selectedUser.isVa ? 
+          <button onClick={handleCompleteClick} className="btn btn-primary mt-4">Complete</button> : ''}
         </div>
       )}
     </div>

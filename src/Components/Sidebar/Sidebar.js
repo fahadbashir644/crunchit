@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './Sidebar.css';
-import { FaBattleNet, FaServicestack, FaCodePullRequest, FaUsersGear, FaCircleDollarToSlot } from 'react-icons/fa6';
+import { FaBattleNet, FaServicestack, FaCodePullRequest, FaUsersGear, FaCircleDollarToSlot, FaCheckDouble } from 'react-icons/fa6';
 import logo from '../../Assets/logo.png';
 import {Link} from 'react-router-dom';
 import { useAuth } from '../Auth/Auth';
@@ -9,7 +9,7 @@ import { useHireContext } from '../../App';
 const Sidebar = ({isActive, setIsActive}) => {
 
   const {setIsLoggedIn} = useAuth();
-  const {setIsAdmin, setIsVa, isAdmin, isVa} = useHireContext();
+  const {setIsAdmin, setIsVa, isAdmin, isVa, setLogin} = useHireContext();
   const handleLogout = () => {
       localStorage.clear();
       sessionStorage.clear();
@@ -17,6 +17,7 @@ const Sidebar = ({isActive, setIsActive}) => {
       setIsVa(false);
       setIsLoggedIn(false);
       setIsActive(false);
+      setLogin(false);
   }
 
   return (
@@ -36,9 +37,17 @@ const Sidebar = ({isActive, setIsActive}) => {
         <FaCodePullRequest />
         <span className="mx-2">Hiring Requests</span>
       </Link>
+      <Link to="/customRequests" className="nav-link">
+        <FaCodePullRequest />
+        <span className="mx-2">Custom Requests</span>
+      </Link>
       <Link to="/virtualAssistants" className="nav-link">
         <FaUsersGear />
         <span className="mx-2">Virtual Assistants</span>
+      </Link>
+      <Link to="/completedProjects" className="nav-link">
+        <FaCheckDouble />
+        <span className="mx-2">Completed Projects</span>
       </Link>
       <Link to="/setService" className="nav-link">
         <FaServicestack />
@@ -63,10 +72,10 @@ const Sidebar = ({isActive, setIsActive}) => {
       <span className="mx-2">Buy CrunchCard</span>
     </Link></>
       }
-      <Link to='/' onClick={handleLogout} className="mt-4 btn btn-secondary logout-btn">
+    </ul>
+    <Link to='/' onClick={handleLogout} className="mt-4 btn btn-secondary logout-btn">
         Logout
       </Link>
-    </ul>
   </div>
     </>
   );

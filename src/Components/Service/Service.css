@@ -1,6 +1,18 @@
 .service-div label {
     margin-bottom: 10px;
 }
+
+.service-input1 {
+    width: 50%;
+}
+
+@media (max-width: 767px) {
+    .service-input1 {
+        width: 70%;
+    }
+    
+}
+
 @media (max-width: 467px) {
     .service-div {
         display: flex;

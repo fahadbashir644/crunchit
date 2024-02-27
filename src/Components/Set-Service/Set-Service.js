@@ -10,7 +10,7 @@ const SetService = () => {
   const [newServiceRate, setNewServiceRate] = useState('');
 
   useEffect(() => {
-    axios.get("http://localhost:8000/getAllServices").then((res) => {   
+    axios.get("http://137.184.81.218:8000/getAllServices").then((res) => {   
       if (res) {
         setServices(res.data.services);
       } 
@@ -23,7 +23,7 @@ const SetService = () => {
         service: newService,
         rate: newServiceRate,
       };
-      axios.post("http://localhost:8000/addService", data).then((res) => {
+      axios.post("http://137.184.81.218:8000/addService", data).then((res) => {
         if (res) {
           setServices([...services, res.data]);
           setNewService('');
@@ -46,7 +46,7 @@ const SetService = () => {
     const data = {
       service: serviceToRemove,
     };
-    axios.post("http://localhost:8000/removeService", data).then((res) => {   
+    axios.post("http://137.184.81.218:8000/removeService", data).then((res) => {   
       if (res) {
         const updatedServices = services.filter((service) => service.name !== serviceToRemove);
         setServices(updatedServices);
@@ -62,7 +62,7 @@ const SetService = () => {
       service: service._id,
       rate: service.rate,
     };
-    axios.post("http://localhost:8000/setServiceRate", data).then((res) => {
+    axios.post("http://137.184.81.218:8000/setServiceRate", data).then((res) => {
       if (res) {
         toast.success(`Rate for ${service.name} updated successfully`);
       } else {

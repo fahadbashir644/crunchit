@@ -9,7 +9,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useAuth();
   const navigate = useNavigate();
   const {balance, 
@@ -32,7 +34,7 @@ const PaymentPage = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
@@ -46,7 +48,7 @@ const PaymentPage = () => {
   }, [workingHours]);
 
     const handleEmailChange = (event) => {
-        setEmail(event.target.value);
+        setNewEmail(event.target.value);
     };
 
     const handlePasswordChange = (event) => {
@@ -54,8 +56,22 @@ const PaymentPage = () => {
     };
 
     const handlePayClick = () => {
+      if (newEmail === '' || password === '') {
+        toast.error('Please Enter All Fields');
+        return;
+      }
+      setIsLoading(true);
         if (totalPrice <= balance) {
-        let hours = {};
+          axios
+          .post("http://137.184.81.218:8000/login", {
+            header: { "Content-Type": "application/json" },
+            data: {
+              email: newEmail,
+              password: password,
+            },
+          })
+          .then((response) => {
+            let hours = {};
           workingHours.forEach((value,key) => {
             hours[key] = value;
           });
@@ -65,19 +81,30 @@ const PaymentPage = () => {
             selectedService: selectedService.name ?? customService,
             totalHours: totalHours,
             workingHours: hours,
-            timezone: selectedTimezone.value
+            timezone: selectedTimezone?.value
           };
-          axios.post("http://localhost:8000/pay", data).then((res) => {   
+          axios.post("http://137.184.81.218:8000/pay", data).then((res) => {   
             if (res) {
+                setIsLoading(false);
                 toast.success('Payment Successful');
                 setTotalPrice(0);
                 setWorkingHours(new Map());
                 setSelectedService('');
                 setCustomService('');
                 setBalance(res.data.balance);
-                navigate('/enquiry');
+                navigate(customService ? '/enquiry' : '/purchase');
             } else {
+              setIsLoading(false);
               toast.error('Payment failed');
+            }
+          });
+          }).catch((error) => {
+            if (error.response.status === 400) {
+              setIsLoading(false);
+              toast.error("Incorrect Email/Password");
+            } else {
+              setIsLoading(false);
+              toast.error("Email does not exists");
             }
           });
         } else {
@@ -86,7 +113,23 @@ const PaymentPage = () => {
     };
   return (
     <div className="summary-container">
-        <h2 className='cstm-h2'>Make Payment</h2>
+      {isLoggedIn ? 
+      <div className="row balance-header">
+        <div className="col-2 p2 home-heading">
+          <h4>Make Payment</h4>
+        </div>
+        <div className="col">
+          <div className='p-2 balance-div'>
+          <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
+              <div className='balance-box'> 
+                <h5>${balance}</h5>
+                </div>
+          </div>
+        </div>
+      </div>
+      : ''}
         <div className="mt-4 form-group payment-div">
           <div>
               <label>Email:</label>
@@ -94,7 +137,7 @@ const PaymentPage = () => {
                   type="email"
                   className="form-control"
                   id="emailInput"
-                  value={email}
+                  value={newEmail}
                   onChange={handleEmailChange}
               />
             </div>
@@ -108,11 +151,14 @@ const PaymentPage = () => {
                   onChange={handlePasswordChange}
               />
             </div>
+            {isLoading ? (
+              <div className="mt-4 p-4 spinner-border" role="status">
+            </div>):
               <button className='btn btn-primary mt-4' onClick={handlePayClick}>Pay</button>
+            }
         </div>
         <div className="d-flex justify-content-center mt-6">
           <Link to='/summary' className="btn btn-secondary">Back</Link>
-          <Link to={customService ? '/enquiry' : '/purchase'} className="btn btn-primary">Next</Link>
         </div>
     </div>
   );

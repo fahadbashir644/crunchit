@@ -17,7 +17,7 @@
   
   .chat-messages {
     padding: 10px;
-    max-height: 70%;
+    max-height: 350px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #979595 black;
@@ -107,6 +107,15 @@
     }
     .message-input button {
       margin-top: 10px;
+    }
+    .chat-window {
+      padding: 0px;
+    }
+    .chat-messages {
+      max-height: 250px;
+    }
+    .chat-container {
+      margin-top: 20px;
     }
   }
 

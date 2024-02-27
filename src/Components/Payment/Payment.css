@@ -1,11 +1,16 @@
 .cstm-h2 {
+    padding: 20px;
     font-size: 24px;
     margin-bottom: 20px;
     color: #ccc;
   }
 
+  .payment-div {
+    margin-left: 20px;
+  }
+
   .payment-div input {
-    width: 50%;
+    width: 30%;
   }
 
   .payment-div button {

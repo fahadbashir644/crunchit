@@ -22,7 +22,7 @@ const saltrounds = 2;
 
 const socketIO = require('socket.io')(http, {
   cors: {
-      origin: "http://localhost:3000"
+      origin: "http://137.184.81.218:3000"
   }
 });
 
@@ -454,6 +454,17 @@ app.post("/getSubscriptionsOfUser", (req, res) => {
   });
 });
 
+app.post("/getPendingRequests", (req, res) => {
+  Subscription.find({
+    client: req.body.email,
+    projectStatus: 'pending'
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
 app.post("/getSubscriptionsOfVa", (req, res) => {
   Subscription.find({
     va: req.body.email
@@ -562,6 +573,16 @@ app.get("/getActiveSubscriptions", (req, res) => {
   });
 });
 
+app.get("/getCompletedSubscriptions", (req, res) => {
+  Subscription.find({
+    projectStatus: 'complete',
+  }).then((res2) => {
+    if (res2) {
+      res.send({ subscriptions: res2 });
+    }
+  });
+});
+
 app.get("/getCompletedSubscriptionsOfVa", (req, res) => {
   Subscription.find({
     va: req.body.va,
@@ -576,7 +597,19 @@ app.get("/getCompletedSubscriptionsOfVa", (req, res) => {
 app.get("/getHiringRequests", (req, res) => {
   Subscription.find({
     paymentStatus: 'paid',
-    projectStatus: 'pending'
+    projectStatus: 'pending',
+    isCustom: false
+  }).then((res2) => {
+    if (res2) {
+      res.send({ hiringRequests: res2 });
+    }
+  });
+});
+
+app.get("/getCustomRequests", (req, res) => {
+  Subscription.find({
+    projectStatus: 'pending',
+    isCustom: true
   }).then((res2) => {
     if (res2) {
       res.send({ hiringRequests: res2 });
@@ -603,6 +636,31 @@ app.get("/getAllVas", (req, res) => {
       res.send({ vas: res2 });
     }
   });
+});
+
+app.post("/handleEnquiry", (req, res) => {
+  const subscription = new Subscription({
+    _id: new Types.ObjectId(),
+    client: req.body.email,
+    fee: req.body.price,
+    service: req.body.selectedService,
+    totalHours: req.body.totalHours,
+    paymentStatus: 'none',
+    vaStatus: 'not-assigned',
+    projectStatus: 'pending',
+    workingHours: req.body.workingHours,
+    timezone: req.body.timezone,
+    isCustom: true,
+    enquiry: req.body.enquiry
+  });
+  subscription.save()
+  .then((result2) => {
+    res.send();
+  })
+  .catch((saveError) => {
+    console.error("Error saving subscription:", saveError);
+    res.status(400).send("Error saving user");
+  }); 
 });
 
 app.post("/pay", (req, res) => {

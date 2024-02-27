@@ -3,9 +3,17 @@
     margin-bottom: 20px;
     color: #ccc;
 }
-
-.enquiry-div button{
-    width: 50%;
+.thanks-enquiry-container{
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.thanks-enquiry-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @media (max-width: 467px) {

@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive, setName, setVaRate} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive, setName, setVaRate, setLogin} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -22,7 +22,7 @@ const LoginPage = () => {
     }
  
     axios
-    .post("http://localhost:8000/login", {
+    .post("http://137.184.81.218:8000/login", {
       header: { "Content-Type": "application/json" },
       data: {
         email: email,
@@ -46,9 +46,8 @@ const LoginPage = () => {
       setBalance(response.data.user.balance);
       setIsAdmin(response.data.user.isAdmin);
       setName(response.data.user.name);
-      if (response.data.user?.isAdmin) {
-        setIsActive(true);
-      }
+      setIsActive(true);
+      setLogin(true);
       navigate('/dashboard');
     }).catch((error) => {
       if (error.response.status === 400) {

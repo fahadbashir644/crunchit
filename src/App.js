@@ -26,6 +26,12 @@ import History from './Components/History/History';
 import BuyCrunchcard from './Components/Buy-Crunchcard/Buy-Crunchcard';
 import Finance from './Components/Finance/Finance';
 import Settings from './Components/Settings/Settings';
+import Topup from './Components/Topup/Topup';
+import EnquiryPage from './Components/Enquiry/Enquiry';
+import CustomRequests from './Components/Custom-Requests/Custom-Requests';
+import CustomerSidebar from './Components/Customer-Sidebar/Customer-Sidebar';
+import VaSettings from './Components/Va-Settings/Va-Settings';
+import PendingRequests from './Components/Pending-Requests/Pending-Requests';
 
 const HireContext = createContext();
 
@@ -45,11 +51,12 @@ function App() {
     const [hourlyRate, setHourlyRate] = useState(0);
     const [isVa, setIsVa] = useState(sessionStorage.getItem('isVa') ? sessionStorage.getItem('isVa') : false);
     const [isAdmin, setIsAdmin] = useState(sessionStorage.getItem('isAdmin') ? sessionStorage.getItem('isAdmin') : false);
-    const [name, setName] = useState(sessionStorage.getItem('name') ? sessionStorage.getItem('name') : false);
+    const [name, setName] = useState(sessionStorage.getItem('name') ? sessionStorage.getItem('name') : '');
     const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
     const [isActive, setIsActive] = useState(sessionStorage.getItem('isAdmin') ? true : false);
     const [selectedTimezone, setSelectedTimezone] = useState(null);
     const [vaRate, setVaRate] = useState(sessionStorage.getItem('vaRate') ? sessionStorage.getItem('vaRate') : 0);
+    const [login, setLogin] = useState(sessionStorage.getItem('token') ? true : false);
 
     const contextValue = {
         hourlyRate,
@@ -82,7 +89,9 @@ function App() {
         name,
         setName,
         vaRate,
-        setVaRate
+        setVaRate,
+        login,
+        setLogin
     };
 
   const toggleSidebar = () => {
@@ -93,13 +102,15 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
       <HireContext.Provider value={contextValue}>
-      {isAdmin ? <Sidebar isActive={isActive} setIsActive={setIsActive} /> : '' }
+      {isAdmin ? <Sidebar isActive={isActive} setIsActive={setIsActive} /> : 
+      <CustomerSidebar isActive={isActive} setIsActive={setIsActive} />}
       <div className={`app-container ${isActive ? 'active-cont' : ''}`}>
-      {isAdmin ?
-      <a className="btn border-0" id="menu-btn" onClick={toggleSidebar}>
+      {login ?
+      <a className={`btn border-0 ${isActive ? 'active-menu-btn' : ''}`} id="menu-btn" onClick={toggleSidebar}>
         {isActive ? <FaAngleLeft /> : <FaAngleRight />}
         </a> : ''}
-        {!isAdmin ? <Header /> : ''}
+        {!login ? <Header /> : ''}
+        <div className="content">
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<LoginPage />} />
@@ -108,18 +119,23 @@ function App() {
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/summary" element={<SummaryPage />} />
               <Route path="/payment" element={<PaymentPage />} />
-              <Route path="/enquiry" element={<ThanksEnquiryPage />} />
+              <Route path="/enquiry" element={<EnquiryPage />} />
+              <Route path="/thanksEnquiry" element={<ThanksEnquiryPage />} />
               <Route path="/purchase" element={<ThanksPurchasePage />} />
               <Route path="/dashboard" element={ isVa ? <VaDashboard /> : isAdmin ? <AdminDashboard /> : <CustomerDashboard />} />
               <Route path="/hiringRequests" element={<HiringRequests />} />
+              <Route path="/customRequests" element={<CustomRequests />} />
               <Route path="/virtualAssistants" element={<VirtualAssistants />} />
               <Route path="/setService" element={<SetService />} />
               <Route path="/history" element={<History />} />
               <Route path="/buyCrunchcard" element={<BuyCrunchcard />} />
               <Route path="/transactions" element={<Finance />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings" element={isVa ? <VaSettings /> : <Settings />} />
+              <Route path="/topup" element={<Topup />} />
+              <Route path="/pending" element={<PendingRequests />} />
             </Routes>
-        <Footer />
+            </div>
+        {name === '' ? <Footer /> : ''}
       </div>
       </HireContext.Provider>
       </AuthProvider>

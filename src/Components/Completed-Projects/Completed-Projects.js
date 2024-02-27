@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import './Admin-Dashboard.css';
+import './Completed-Projects.css';
 import axios from "axios";
 
-const AdminDashboard = () => {
-  const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+const CompletedProjects = () => {
+  const [completedSubscriptions, setCompletedSubscriptions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://137.184.81.218:8000/getActiveSubscriptions").then((res) => {   
+    axios.get("http://137.184.81.218:8000/getCompletedSubscriptions").then((res) => {   
       if (res) {
-        setActiveSubscriptions(res.data.subscriptions);
+        setCompletedSubscriptions(res.data.subscriptions);
       } 
     });
   }, []);
@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   return (
     <div className="container mt-5" >
       <div className="dashboard-header">
-        <h3 style={{ color: 'rgb(102 99 99)' }}>Active Subscriptions</h3>
+        <h3 style={{ color: 'rgb(102 99 99)' }}>Completed Subscriptions</h3>
       </div>
       <div className="table-responsive mt-4">
         <table className="table">
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {activeSubscriptions.map((subscription, index) => (
+            {completedSubscriptions.map((subscription, index) => (
               <tr key={subscription.id}>
                 <td style={{ border: 'none', textAlign: 'center' }}>{index + 1}</td>
                 <td style={{ border: 'none', textAlign: 'center' }}>{subscription.client}</td>
@@ -46,4 +46,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default CompletedProjects;

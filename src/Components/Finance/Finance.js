@@ -1,16 +1,17 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import axios from "axios";
 import { useHireContext } from '../../App.js';
 
 const Finance = () => {
   const [transactions, setTransactions] = useState([]);
-  const {email} = useHireContext();
+  const {email, balance} = useHireContext();
 
   useEffect(() => {
     const data = {
         email: email
     }
-    axios.post("http://localhost:8000/getTransactions", data).then((res) => {   
+    axios.post("http://137.184.81.218:8000/getTransactions", data).then((res) => {   
       if (res) {
         setTransactions(res.data.transactions);
       } 
@@ -19,8 +20,20 @@ const Finance = () => {
 
   return (
     <div className="container history-container mt-5" >
-      <div className="dashboard-header">
-        <h3 style={{ color: 'rgb(102 99 99)' }}>Transactions</h3>
+      <div className="row balance-header">
+        <div className="col-2 p2 home-heading">
+          <h4>Transactions</h4>
+        </div>
+        <div className="col">
+          <div className='p-2 balance-div'>
+              <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
+              <div className='balance-box'> 
+                <h5>${balance}</h5>
+                </div>
+          </div>
+        </div>
       </div>
       <div className="table-responsive mt-4">
         <table className="table">

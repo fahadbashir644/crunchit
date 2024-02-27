@@ -5,7 +5,6 @@
   
   .user-list {
     padding-right: 15px;
-    height: calc(70vh - 50px);
     overflow-y: auto;
   }
   
@@ -20,7 +19,6 @@
   
   .chat-window {
     padding: 15px;
-    height: calc(100vh - 50px);
     overflow-y: auto;
   }
   
@@ -32,10 +30,6 @@
     font-weight: bold;
   }
   
-.va-chat {
-    border-top: 1px solid #222;
-}
-  
 /* Customer-Dashboard.css */
 /* Customer-Dashboard.css */
 .countdown-timer {
@@ -44,6 +38,14 @@
   justify-content: flex-end;
 }
 
+.timer-div {
+  display: flex;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+}
 .timer {
   font-size: 24px;
   color: #ffffff; /* White text color */
@@ -54,3 +56,25 @@
   margin-left: 20px; /* Add some spacing between timer and top-up bar */
 }
 
+.hire-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 50vh;
+}
+
+@media (max-width: 767px) {
+  .user-list {
+    margin-bottom: 10px;
+  }
+  .user-list {
+    padding-right: 10px;
+  }
+  .chat-window {
+    padding: 0px;
+  }
+  .user-list-container {
+    border-right: none;
+    min-height: 0vh;
+  }
+}

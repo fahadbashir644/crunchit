@@ -1,4 +1,6 @@
 import React from 'react';
+import { useAuth } from '../Auth/Auth';
+
 const BuyCrunchcard = () => {
 
   return (

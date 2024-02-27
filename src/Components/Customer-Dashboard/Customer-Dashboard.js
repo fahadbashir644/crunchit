@@ -8,20 +8,24 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../Auth/Auth';
 import io from 'socket.io-client';
+import { Link } from 'react-router-dom';
 
 const CustomerDashboard = () => {
+  const [isLoading, setIsLoading] = useState(true);
     const [topup, setTopup] = useState(0);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const {isLoggedIn} = useAuth();
     const {balance, 
            setBalance,
-           email
+           email,
+           handleAddBalance
           } = useHireContext();
     const [users, setUsers] = useState([]);
     const [socket, setSocket] = useState(null);
     const [newMessageAlert, setNewMessageAlert] = useState(false);
     const [highlightedSender, setHighlightedSender] = useState(null);
-    const [currentSessionStartTime, setCurrentSessionStartTime] = useState(null);
+    const [sessionRemainingTime, setSessionRemainingTime] = useState(null);
+    const [timeUntilSessionStart, setTimeUntilSessionStart] = useState(null);
 
     // State for the countdown time (remaining time)
     const [countdownTime, setCountdownTime] = useState(null);
@@ -33,11 +37,21 @@ const CustomerDashboard = () => {
     };
     
     useEffect(() => {
+      // Simulate loading for 1 second
+      const loadingTimeout = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 1 second
+      }, 1000);
+  
+      // Cleanup the timeout if the component unmounts
+      return () => clearTimeout(loadingTimeout);
+    }, []);
+
+    useEffect(() => {
       if (isLoggedIn) {
         const data = {
           email: email,
         };
-        axios.post("http://localhost:8000/getSubscriptionsOfUser", data).then((res) => {   
+        axios.post("http://137.184.81.218:8000/getSubscriptionsOfUser", data).then((res) => {   
           if (res) {
             setActiveSubscriptions(res.data.subscriptions);
           } 
@@ -48,18 +62,23 @@ const CustomerDashboard = () => {
     },[]);
 
     useEffect(() => {
-      if (currentSessionStartTime != null && currentSessionStartTime >= 0) {
+      if (sessionRemainingTime != null && sessionRemainingTime >= 0) {
         const interval = 1000;
         const timer = setInterval(() => {
           let now = new Date();
           now =  now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
-          let endTime = currentSessionStartTime + (60*60);
+          let endTime = sessionRemainingTime + (60*60);
           let timeRemaining = endTime - now;
           timeRemaining = timeRemaining * 1000;
           if (timeRemaining <= 0) {
             clearInterval(timer);
-            setCurrentSessionStartTime(null); // Reset the session start time
+            setSessionRemainingTime(null); // Reset the session start time
             setCountdownTime(null); // Reset the countdown time
+            let currentVa = users.find((item) => item._id === selectedUserId);
+            let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
+            if (currentSub) {
+              startWorkingSession(currentSub['workingHours']);
+            }
           } else {
             setCountdownTime(timeRemaining);
           }
@@ -68,20 +87,53 @@ const CustomerDashboard = () => {
         // Store the timer ID in state to clear it on unmount
         return () => clearInterval(timer);
       }
-    }, [currentSessionStartTime]);
+    }, [sessionRemainingTime]);
   
+    useEffect(() => {
+      if (timeUntilSessionStart != null) {
+        const interval = 1000;
+        const timer = setInterval(() => {
+          let now = new Date();
+          now =  now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+          let timeRemaining = timeUntilSessionStart - now;
+          timeRemaining = timeRemaining * 1000;
+          if (timeRemaining <= 0) {
+            clearInterval(timer);
+            setTimeUntilSessionStart(null); // Reset the session start time
+            setCountdownTime(null); // Reset the countdown time
+            let currentVa = users.find((item) => item._id === selectedUserId);
+            let currentSub = activeSubscriptions.find((item) => item.va === currentVa?.email);
+            if (currentSub) {
+              startWorkingSession(currentSub['workingHours']);
+            }
+          } else {
+            setCountdownTime(timeRemaining);
+          }
+        }, interval);
+  
+        // Store the timer ID in state to clear it on unmount
+        return () => clearInterval(timer);
+      }
+    }, [timeUntilSessionStart]);
+
     // Function to start a working session
     const startWorkingSession = (hours) => {
       const now = new Date();
       const currentDate = now.toLocaleDateString();
       const currentTime = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
       let sessionStartTime = hours[currentDate]?.find((time) => currentTime-(time*3600) >= 0 && currentTime-(time*3600) <= 3600);
+      let timeUntilSession = hours[currentDate]?.find((time) => currentTime-(time*3600) < 0);
       if (sessionStartTime != null && sessionStartTime >= 0) {
         sessionStartTime = sessionStartTime * 60 * 60;
-        setCurrentSessionStartTime(sessionStartTime);
+        setSessionRemainingTime(sessionStartTime);
+        setTimeUntilSessionStart(null);
+      } else if (timeUntilSession != null) {
+        timeUntilSession = timeUntilSession * 3600;
+        setTimeUntilSessionStart(timeUntilSession);
+        setSessionRemainingTime(null);
       } else {
         setCountdownTime(null);
-        setCurrentSessionStartTime(null);
+        setSessionRemainingTime(null);
       }
     };
 
@@ -89,7 +141,7 @@ const CustomerDashboard = () => {
       const data = {
         client: email,
       };
-      axios.post("http://localhost:8000/getRelatedVas", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -97,7 +149,7 @@ const CustomerDashboard = () => {
     }, [activeSubscriptions]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8000');
+    const newSocket = io('http://137.184.81.218:8000');
     setSocket(newSocket);
 
     return () => {
@@ -118,17 +170,13 @@ const CustomerDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
+      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
       });
     }
   });
-
-  const handleTopupChange = (event) => {
-    setTopup(event.target.value);
-  };
 
   const handleUserClick = (userId) => {
     setSelectedUserId(userId);
@@ -141,64 +189,50 @@ const CustomerDashboard = () => {
     }
   };
 
-  const handleTopUp = () => {
-        axios.post("http://localhost:8000/topup", {
-        header: { "Content-Type": "application/json" },
-        data : JSON.stringify({
-            price_amount: topup,
-            price_currency: "usd",
-            order_description: email,
-            ipn_callback_url: "http://137.184.81.218/ipn",
-            success_url: "https://nowpayments.io",
-            cancel_url: "https://nowpayments.io"
-            })
-        })
-        .then((response) => {
-            if (response) {
-                let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-        width=500,height=500`;
-                window.open(response.data.invoice_url, "test", params);
-            }
-        }).catch((error) => {
-          toast.error("Error occurred while topup");
-        });
-  };
-
   return (
     <div className="dashboard">
     <div className="container">
-      <div className="row">
-        <div className="col-md-6">
-          <div className="balance-topup">
-            <div className="mt-4 form-group">
-              <label >Add Balance:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="topupInput"
-                value={topup}
-                style={{width: "140px"}}
-                onChange={handleTopupChange}
-              />
-            </div>
-            <button className="btn btn-primary" onClick={handleTopUp}>
-              Top Up
-            </button>
-          </div>
+    <div className="row balance-header">
+        <div className="col-2 p2 home-heading">
+          <h4>Subscriptions</h4>
         </div>
-        <div className='col-md-6'>
-          <div className="countdown-timer">
-          {countdownTime && (
-            <div className='timer'>
-              <p>Time Remaining:</p>
-              <p>{formatCountdownTime(countdownTime)}</p>
-            </div>
-          )}
+        <div className="col">
+          <div className='p-2 balance-div'>
+          <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
+              <div className='balance-box'> 
+                <h5>${balance}</h5>
+                </div>
           </div>
         </div>
       </div>
-      <div className="row mt-8 va-chat p-4">
-        <div className="col-md-3">
+      <div className="row">
+      <div className="dashboard-header">
+        {/* <h3 style={{ color: 'rgb(102 99 99)' }}>Subscriptions</h3> */}
+        {countdownTime && (
+            <div className='timer-div'>
+              {timeUntilSessionStart ? 
+              <h5 style={{marginRight: '10px'}}>Time Until Session Starts:</h5> :
+              <h5 style={{marginRight: '10px'}}>Time Remaining:</h5>
+            }
+              
+              <h5>{formatCountdownTime(countdownTime)}</h5>
+            </div>
+        )}
+      </div>
+        <div className='col-md-6'>
+          <div className="countdown-timer">
+          </div>
+        </div>
+      </div>
+      <div className="row va-chat p-4">
+        {isLoading ? (
+        <div className="mt-4 p-4 spinner-border" role="status">
+      </div>
+      ) :users?.length !== 0 ?
+        <>
+        <div className="col-md-3 user-list-container">
           <UserList
             users={users}
             handleUserClick={handleUserClick}
@@ -216,12 +250,21 @@ const CustomerDashboard = () => {
                 activeSubscriptions={activeSubscriptions}
                 setActiveSubscriptions={setActiveSubscriptions}
                 setSelectedUser={setSelectedUserId}
+                setCountdownTime={setCountdownTime}
               />
             ) : (
               <p>Select a user to start chatting</p>
             )}
           </div>
         </div>
+        </> :
+        <div className='hire-div'>
+        <h5 style={{ color: 'rgb(102 99 99)' }}>Hire Your First VA</h5>
+        <Link to="/select" className="btn btn-primary mt-2">
+            Hire
+        </Link>
+      </div>
+        }
       </div>
     </div>
   </div>

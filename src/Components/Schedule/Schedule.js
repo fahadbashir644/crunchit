@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import Select from 'react-select';
 import tzIds from 'tz-ids';
+import { useAuth } from '../Auth/Auth';
 
 const SchedulePage = ({ onNext, onBack }) => {
 
@@ -24,9 +25,10 @@ const SchedulePage = ({ onNext, onBack }) => {
     totalPrice,
     setTotalPrice,
     selectedTimezone,
-    setSelectedTimezone
+    setSelectedTimezone,
+    balance
   } = useHireContext();
-
+  const {isLoggedIn, setIsLoggedIn} = useAuth();
   // Fetch all timezone options using tz-ids
   const allTimezones = tzIds.map((tzId) => ({
     value: tzId,
@@ -45,7 +47,7 @@ const SchedulePage = ({ onNext, onBack }) => {
   };
 
   const handleHourClick = (event, day) => {
-    const updatedWorkingHours = new Map(workingHours);
+    let updatedWorkingHours = new Map(workingHours);
     let currentDate = addDaysToDate(selectedDate,day);
     currentDate = formatDate(currentDate);
     let hour = Number(event.currentTarget.closest('tr').id);
@@ -58,7 +60,7 @@ const SchedulePage = ({ onNext, onBack }) => {
         setTotalPrice(price);
         hours.push(hour);
       } else {
-        const index = hours.indexOf(hour);
+        let index = hours.indexOf(hour);
         if (index > -1) {
           price = price - hourlyRate;
           setTotalPrice(price);
@@ -73,6 +75,7 @@ const SchedulePage = ({ onNext, onBack }) => {
       setTotalPrice(price);
       updatedWorkingHours.set(currentDate, [hour]);
     }
+    updatedWorkingHours = sortWorkingHours(updatedWorkingHours);
     setWorkingHours(updatedWorkingHours);
   };
 
@@ -82,12 +85,24 @@ const SchedulePage = ({ onNext, onBack }) => {
     return newDate;
   };
 
+  const sortWorkingHours = (hours) => {
+    const sortedData = new Map(hours);
+
+  // Sort the arrays associated with each date
+  for (const date in sortedData) {
+    if (sortedData.hasOwnProperty(date)) {
+      sortedData[date].sort((a, b) => a - b); // Sort the values as numbers
+    }
+  }
+
+    return sortedData;
+  } 
   const renderHourCells = (date, index) => {
     let selectedHours;
     const days = Array.from({ length: 7 }, (_, index) => index);
 
     return days.map((day) => {
-      selectedHours = workingHours.get(formatDate(addDaysToDate(date,day))) || [];
+      selectedHours = workingHours?.get(formatDate(addDaysToDate(date,day))) || [];
       const isSelected = selectedHours.includes(index);
       const newDate = addDaysToDate(date, day);
       const uniqueKey = `${newDate.toISOString()}-${index}`;
@@ -112,7 +127,7 @@ const SchedulePage = ({ onNext, onBack }) => {
     });
 
     return dates.map((date) => (
-      <th key={date.toISOString()} style={{width: '120px'}}>{date.toDateString()}</th>
+      <th key={date.toISOString()} style={{width: '190px'}}>{date.toDateString()}</th>
     ));
   };
 
@@ -128,14 +143,29 @@ const SchedulePage = ({ onNext, onBack }) => {
 
   return (
     <div className="cstm-container mt-5">
-      <h2 className='cstm-h2'>Schedule</h2>
+      {isLoggedIn ?
+      <div className="row balance-header">
+        <div className="col-2 p2 home-heading">
+          <h4>Schedule</h4>
+        </div>
+        <div className="col">
+          <div className='p-2 balance-div'>
+          <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
+              <div className='balance-box'> 
+                <h5>${balance}</h5>
+                </div>
+          </div>
+        </div>
+      </div> : ''}
       <form>
-      <div className="cstm-form-group cstm-row-flex">
-        <div className="cstm-col-flex">
+      <div className="cstm-form-group calendar-cont cstm-row-flex">
+        <div className="cstm-col-flex date-row">
           <label>Select Date:</label>
           <DatePicker selected={selectedDate} onChange={handleDateChange} />
         </div>
-        <div className="cstm-form-group">
+        <div className="cstm-form-group time-row">
           <label>Select Timezone:</label>
           <Select
             value={selectedTimezone}
@@ -169,8 +199,8 @@ const SchedulePage = ({ onNext, onBack }) => {
             </table>
           </div>
         </div>
-        <div className="cstm-form-group">
-          <label>Is orientation required?</label>
+        <div className="orient-form-group">
+          <label style={{marginRight: '20px'}}>Is orientation required?</label>
           <div>
             <label style={{marginRight: '20px'}}>
               <input
