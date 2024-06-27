@@ -16,7 +16,7 @@ const VaSettings = () => {
     const data = {
       email: email,
     };
-    axios.post("http://137.184.81.218:8000/getAvailability", data).then((res) => {   
+    axios.post("http://137.184.81.218/getAvailability", data).then((res) => {   
       if (res) {
         setIsAvailable(res.data.available);
       } 
@@ -29,7 +29,7 @@ const handleToggleAvailability = () => {
     email: email,
     available: !isAvailable,
   };
-  axios.post("http://137.184.81.218:8000/changeAvailability", data).then((res) => {   
+  axios.post("http://137.184.81.218/changeAvailability", data).then((res) => {   
     if (res) {
     } 
   });
@@ -45,7 +45,7 @@ const handleToggleAvailability = () => {
             email: email,
             password: newPassword,
         };
-        axios.post("http://137.184.81.218:8000/changePassword", data).then((res) => {
+        axios.post("http://137.184.81.218/changePassword", data).then((res) => {
         if (res) {
             setNewPassword('');
             setConfirmNewPassword('');

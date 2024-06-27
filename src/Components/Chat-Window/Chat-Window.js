@@ -20,7 +20,7 @@ const ChatWindow = ({ setCountdownTime, selectedUser, setSelectedUser, socket, s
         sender: email,
         receiver: selectedUser.email
       };
-      axios.post('http://137.184.81.218:8000/getMessages', data)
+      axios.post('http://137.184.81.218/getMessages', data)
         .then(response => {
           setChatMessages(response.data);
         })
@@ -81,7 +81,7 @@ const ChatWindow = ({ setCountdownTime, selectedUser, setSelectedUser, socket, s
           workingHours: currentSubscription.totalHours,
           balance: selectedUser.balance
         };
-        axios.post('http://137.184.81.218:8000/completeProject', data)
+        axios.post('http://137.184.81.218/completeProject', data)
           .then(response => {
             setActiveSubscriptions(response.data.subscriptions);
             setSelectedUser(null);

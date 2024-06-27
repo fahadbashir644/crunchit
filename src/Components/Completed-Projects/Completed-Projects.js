@@ -6,12 +6,12 @@ const CompletedProjects = () => {
   const [completedSubscriptions, setCompletedSubscriptions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://137.184.81.218:8000/getCompletedSubscriptions").then((res) => {   
+    axios.get("http://137.184.81.218/getCompletedSubscriptions").then((res) => {   
       if (res) {
         setCompletedSubscriptions(res.data.subscriptions);
       } 
     });
-  }, []);
+  },[]);
 
   return (
     <div className="container mt-5" >

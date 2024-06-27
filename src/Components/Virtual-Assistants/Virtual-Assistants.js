@@ -6,7 +6,7 @@ const VirtualAssistants = () => {
   const [virtualAssistants, setVirtualAssistants] = useState([]);
 
   useEffect(() => {
-    axios.get('http://137.184.81.218:8000/getAllVas').then((res) => {
+    axios.get('http://137.184.81.218/getAllVas').then((res) => {
       if (res) {
         setVirtualAssistants(res.data.vas);
       }
@@ -18,7 +18,7 @@ const VirtualAssistants = () => {
       va: selectedVaId,
       vaRate: rate
     };
-    axios.post("http://137.184.81.218:8000/setRateOfVa", data).then((res) => {   
+    axios.post("http://137.184.81.218/setRateOfVa", data).then((res) => {   
       if (res) {
         toast.success('Successfully Updated Rate of VA');
       } 

@@ -45,7 +45,7 @@ const VaDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://137.184.81.218:8000/getSubscriptionsOfVa", data).then((res) => {   
+      axios.post("http://137.184.81.218/getSubscriptionsOfVa", data).then((res) => {   
         if (res) {
           setActiveSubscriptions(res.data.subscriptions);
         } 
@@ -143,7 +143,7 @@ const VaDashboard = () => {
     const data = {
       va: email,
     };
-    axios.post("http://137.184.81.218:8000/getRelatedUsers", data).then((res) => {   
+    axios.post("http://137.184.81.218/getRelatedUsers", data).then((res) => {   
       if (res) {
           setUsers(res.data.users);
       } 
@@ -151,7 +151,7 @@ const VaDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const newSocket = io('http://137.184.81.218:8000');
+    const newSocket = io('http://137.184.81.218');
     setSocket(newSocket);
 
     return () => {

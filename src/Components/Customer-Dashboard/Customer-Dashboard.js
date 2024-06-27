@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../Auth/Auth';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
+import Paystack from '../Paystack/Paystack.js';
 
 const CustomerDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,7 +52,7 @@ const CustomerDashboard = () => {
         const data = {
           email: email,
         };
-        axios.post("http://137.184.81.218:8000/getSubscriptionsOfUser", data).then((res) => {   
+        axios.post("http://137.184.81.218/getSubscriptionsOfUser", data).then((res) => {   
           if (res) {
             setActiveSubscriptions(res.data.subscriptions);
           } 
@@ -141,7 +142,7 @@ const CustomerDashboard = () => {
       const data = {
         client: email,
       };
-      axios.post("http://137.184.81.218:8000/getRelatedVas", data).then((res) => {   
+      axios.post("http://137.184.81.218/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -149,7 +150,7 @@ const CustomerDashboard = () => {
     }, [activeSubscriptions]);
 
   useEffect(() => {
-    const newSocket = io('http://137.184.81.218:8000');
+    const newSocket = io('http://137.184.81.218');
     setSocket(newSocket);
 
     return () => {
@@ -170,9 +171,10 @@ const CustomerDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://137.184.81.218:8000/getbalance", data).then((res) => {   
+      axios.post("http://137.184.81.218/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
+            setTopup(0);
         } 
       });
     }

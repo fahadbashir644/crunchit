@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Topup.css';
 import {Link} from 'react-router-dom';
+import Paystack from '../Paystack/Paystack.js';
 
 const Topup = () => {
     const [topup, setTopup] = useState(0);
@@ -18,13 +19,13 @@ const Topup = () => {
   };
 
   const handleTopUp = () => {
-        axios.post("http://137.184.81.218:8000/topup", {
+        axios.post("http://137.184.81.218/topup", {
         header: { "Content-Type": "application/json" },
         data : JSON.stringify({
             price_amount: topup,
             price_currency: "usd",
             order_description: email,
-            ipn_callback_url: "http://137.184.81.218/ipn",
+            ipn_callback_url: "http://localhost/ipn",
             success_url: "https://nowpayments.io",
             cancel_url: "https://nowpayments.io"
             })
@@ -70,9 +71,7 @@ const Topup = () => {
                 onChange={handleTopupChange}
               />
             </div>
-            <button className="btn btn-primary" onClick={handleTopUp}>
-              Top Up
-            </button>
+            <Paystack amount={Number(topup)}/>
           </div>
         </div>
         </div>

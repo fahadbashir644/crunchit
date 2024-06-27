@@ -11,7 +11,7 @@ const Finance = () => {
     const data = {
         email: email
     }
-    axios.post("http://137.184.81.218:8000/getTransactions", data).then((res) => {   
+    axios.post("http://137.184.81.218/getTransactions", data).then((res) => {   
       if (res) {
         setTransactions(res.data.transactions);
       } 

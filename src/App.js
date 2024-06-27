@@ -32,6 +32,7 @@ import CustomRequests from './Components/Custom-Requests/Custom-Requests';
 import CustomerSidebar from './Components/Customer-Sidebar/Customer-Sidebar';
 import VaSettings from './Components/Va-Settings/Va-Settings';
 import PendingRequests from './Components/Pending-Requests/Pending-Requests';
+import CompletedProjects from './Components/Completed-Projects/Completed-Projects';
 
 const HireContext = createContext();
 
@@ -133,6 +134,7 @@ function App() {
               <Route path="/settings" element={isVa ? <VaSettings /> : <Settings />} />
               <Route path="/topup" element={<Topup />} />
               <Route path="/pending" element={<PendingRequests />} />
+              <Route path="/completedProjects" element={<CompletedProjects />} />
             </Routes>
             </div>
         {name === '' ? <Footer /> : ''}

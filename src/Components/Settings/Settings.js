@@ -21,7 +21,7 @@ const Settings = () => {
             email: email,
             password: newPassword,
         };
-        axios.post("http://137.184.81.218:8000/changePassword", data).then((res) => {
+        axios.post("http://137.184.81.218/changePassword", data).then((res) => {
         if (res) {
             setNewPassword('');
             setConfirmNewPassword('');
