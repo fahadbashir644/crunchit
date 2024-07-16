@@ -1147,5 +1147,17 @@ app.post("/addBalance", (req, res) => {
   });  
 });
 
+app.post("/getCryptoRate", async (req, res) => {
+  try {
+    let symbol = req.body.currency;
+    const response = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+    const price = response.data.price;
+    res.send({ cur: price });
+  } catch (error) {
+    console.error('Error fetching Binance ticker:', error.message);
+    res.status(500).send();
+  }
+});
+
 const PORT = 8000;
 http.listen(PORT, () => console.log(`Listening on port ${PORT}`));

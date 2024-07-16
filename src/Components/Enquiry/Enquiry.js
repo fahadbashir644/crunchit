@@ -50,7 +50,7 @@ const EnquiryPage = () => {
         timezone: selectedTimezone?.value,
         enquiry: enquiry
       };
-      axios.post("http://localhost/handleEnquiry", data).then((res) => {   
+      axios.post("http://137.184.81.218/handleEnquiry", data).then((res) => {   
         if (res) {
             navigate('/thanksEnquiry');
         } 
