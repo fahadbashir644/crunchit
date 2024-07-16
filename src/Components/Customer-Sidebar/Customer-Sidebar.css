@@ -1,0 +1,83 @@
+.side-navbar {
+  margin-top: 0;
+  width: 0rem !important;
+  height: 100%;
+  position: fixed;
+  margin-left: -300px; 
+  background-color: rgb(20, 20, 20);
+  transition: 0.5s;
+}
+.nav-link:active,
+.nav-link:focus,
+.nav-link:hover {
+  background-color: #ffffff26;
+}
+.my-container {
+  transition: 0.4s;
+}
+
+.active-nav {
+  margin-left: 0;
+  width: 13.75rem !important;
+}
+/* for main section */
+/* .active-cont {
+  margin-left: 13.75rem;
+} */
+
+.logo-div {
+  border-bottom: 1px solid #222;
+  margin-bottom: 20px;
+}
+
+.mx-2{
+  color: rgb(102, 99, 99);
+}
+
+.logout-btn {
+  width: 100%;
+}
+
+.profile-bar {
+  display: flex;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #222;
+}
+
+.profile-info {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 738px) {
+  .side-navbar {
+    display: none !important;
+    width: 13.75rem !important;
+    z-index: 400;
+    margin-left: 0;
+  }
+
+  .active-nav {
+    display: flex !important;
+  }
+}
+
+@media screen and (max-width: 478px) {
+  .side-navbar {
+    display: none !important;
+    width: 11.75rem !important;
+    z-index: 400;
+    margin-left: 0;
+  }
+
+  .active-nav {
+    display: flex !important;
+  }
+}
+
+@media screen and (max-height: 420px) {
+  .logo-div {
+    display: none;
+  }
+}

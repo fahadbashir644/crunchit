@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHireContext } from '../../App.js';
 
 const LoginPage = () => {
-  const {email, setEmail, setBalance, setIsVa} = useHireContext();
+  const {email, setEmail, setBalance, setIsVa, setIsAdmin, setIsActive, setName, setVaRate, setLogin} = useHireContext();
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {
@@ -22,7 +22,7 @@ const LoginPage = () => {
     }
  
     axios
-    .post("http://localhost:8000/login", {
+    .post("http://137.184.81.218/login", {
       header: { "Content-Type": "application/json" },
       data: {
         email: email,
@@ -33,12 +33,28 @@ const LoginPage = () => {
       setIsLoggedIn(true);
       setIsVa(response.data.user.isVa);
       sessionStorage.setItem('email', response.data.user.email);
-      sessionStorage.setItem('isVa', response.data.user.isVa);
+      if (response.data.user.isAdmin) {
+        sessionStorage.setItem('isAdmin', response.data.user.isAdmin);
+      } else if (response.data.user.isVa) {
+        sessionStorage.setItem('isVa', response.data.user.isVa);
+        sessionStorage.setItem('vaRate', response.data.user.vaRate);
+        setVaRate(response.data.user.vaRate);
+      }
       sessionStorage.setItem('token', response.data.token);
-      setBalance(response.data.user.balance)
-      navigate('/');
+      sessionStorage.setItem('name', response.data.user.name);
+      sessionStorage.setItem('balance', response.data.user.balance);
+      setBalance(response.data.user.balance);
+      setIsAdmin(response.data.user.isAdmin);
+      setName(response.data.user.name);
+      setIsActive(true);
+      setLogin(true);
+      navigate('/dashboard');
     }).catch((error) => {
-      toast.error("Incorrect Email/Password");
+      if (error.response.status === 400) {
+        toast.error("Incorrect Email/Password");
+      } else {
+        toast.error("Email does not exists");
+      }
     });
   };
 

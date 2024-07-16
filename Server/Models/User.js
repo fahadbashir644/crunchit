@@ -7,7 +7,9 @@ const UserSchema = Schema({
   password: { type: String, require: true },
   balance: { type: Number, default: 0 },
   isVa: { type: Boolean, default: false },
+  isAdmin: { type: Boolean, default: false },
   available: { type: Boolean, default: true },
+  vaRate: { type: Number, default: 0 },
 });
 
 module.exports = model("User", UserSchema);

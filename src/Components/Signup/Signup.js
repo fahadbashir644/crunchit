@@ -16,22 +16,26 @@ const SignupPage = () => {
     if (!name || !email || !password) {
       toast.error("Please fill in all required fields");
       return;
-    } 
-      axios
-      .post("http://localhost:8000/signup", {
-        header: { "Content-Type": "application/json" },
-        data: {
-          email: email,
-          password: password,
-          name: name,
-          isVa: isVa
-        },
-      })
-      .then((response) => {
-        navigate('/login');
-      }).catch((error) => {
-        toast.error("Email already registered");
-      });;
+    }
+    if (password.length < 8) {
+      toast.error("Password should be atleast 8 characters long");
+      return;
+    }
+    axios
+    .post("http://137.184.81.218/signup", {
+      header: { "Content-Type": "application/json" },
+      data: {
+        email: email,
+        password: password,
+        name: name,
+        isVa: isVa
+      },
+    })
+    .then((response) => {
+      navigate('/login');
+    }).catch((error) => {
+      toast.error("Email already registered");
+    });;
   };
 
   const handleCheckboxChange = (event) => {

@@ -17,7 +17,7 @@
   
   .chat-messages {
     padding: 10px;
-    max-height: 70%;
+    max-height: 350px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #979595 black;
@@ -87,7 +87,7 @@
   }
   
   .message-input {
-    padding: 10px;
+    padding-top: 10px;
     display: flex;
     align-items: center;
   }
@@ -101,3 +101,29 @@
     min-width: 80px;
   }
   
+  @media (max-width: 767px) {
+    .message-input {
+      flex-direction: column;
+    }
+    .message-input button {
+      margin-top: 10px;
+    }
+    .chat-window {
+      padding: 0px;
+    }
+    .chat-messages {
+      max-height: 250px;
+    }
+    .chat-container {
+      margin-top: 20px;
+    }
+  }
+
+  @media (max-width: 467px) {
+    .chat-header {
+      flex-direction: column-reverse;
+    }
+    .chat-header button {
+      margin-bottom: 10px;
+    }
+  }

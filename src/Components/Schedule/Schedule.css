@@ -36,8 +36,8 @@
 
 /* Styling for container */
 .cstm-container {
-  max-width: 800px;
-  margin: 0 auto;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 /* Styling for the header */
@@ -94,6 +94,31 @@ thead th {
 }
 
 .cstm-row-flex {
+  width: 70%;
   display: flex;
   justify-content: space-between;
+}
+
+.cstm-col-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.orient-form-group {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .calendar-cont {
+    width: 100% !important;
+  }
+
+  .date-row {
+    width: 25%;
+  }
+
+  .time-row {
+    width: 35%;
+  }
 }

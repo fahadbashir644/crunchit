@@ -2,32 +2,37 @@ import React, {useState} from 'react';
 import './Thanks-Enquiry.css';
 import {Link} from 'react-router-dom';
 import { useHireContext } from '../../App.js';
+import { useAuth } from '../Auth/Auth';
 
 const ThanksEnquiryPage = () => {
-    const [email, setEmail] = useState('');
-    const {customService} = useHireContext();
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
+  const {balance
+    } = useHireContext();
+    const {isLoggedIn, setIsLoggedIn} = useAuth();
+
   return (
-    <div className="summary-container">
-        <h2 className='cstm-h2'>Enquiry</h2>
-        <div className="mt-4 form-group">
-              <label>Email:</label>
-              <input
-                  type="email"
-                  className="form-control"
-                  id="emailInput2"
-                  value={email}
-                  style={{width: "50%"}}
-                  onChange={handleEmailChange}
-              />
+    <div className="thanks-enquiry-container">
+      {isLoggedIn ?
+      <div className="row balance-header">
+        <div className="col-2 p2 home-heading">
+          <h4>Thanks</h4>
+        </div>
+        <div className="col">
+          <div className='p-2 balance-div'>
+          <Link to="/topup" className="add-balance-btn btn btn-secondary">
+                Topup
+              </Link>
+              <div className='balance-box'> 
+                <h5>${balance}</h5>
+                </div>
+          </div>
+        </div>
+      </div> : ''}
+        <div className="thanks-enquiry-div">
               <p className='mt-4'>Thank you for your request, we will review it and send you a quote for your
                 request within the hour</p>
         </div>
-        <div className="d-flex justify-content-center mt-6">
-          <Link to={customService ? '/schedule' : '/payment'} className="btn btn-secondary">Back</Link>
-          <Link to='/purchase' className="btn btn-primary">Next</Link>
+        <div className="d-flex justify-content-center mt-2">
+          <Link to='/dashboard' className="btn btn-primary">Continue to Dashboard</Link>
         </div>
     </div>
   );
