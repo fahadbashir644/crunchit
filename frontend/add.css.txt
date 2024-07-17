@@ -1,0 +1,106 @@
+/* SchedulePage.css */
+
+/* Styling for the table */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #f8f9fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table th,
+  .table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #dee2e6;
+    color: black;
+  }
+  
+  /* Styling for selected cells */
+  .selected {
+    background-color: #343a40;
+    color: white;
+  }
+  
+  .selected-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: #343a40;
+    border-radius: 50%;
+  }
+  
+  /* Styling for buttons */
+  .btn {
+    margin-right: 10px;
+  }
+  
+  /* Styling for form group */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  /* Styling for container */
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* Styling for the header */
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: black;
+  }
+  
+  /* Styling for the date picker */
+  .react-datepicker {
+    width: 100%;
+  }
+  
+  /* Styling for the date picker input */
+  .react-datepicker__input-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Styling for the hour cells */
+  .hour-cell {
+    position: relative;
+    cursor: pointer;
+    background-color: #f8f9fa;
+  }
+  
+  /* Styling for the table headers */
+  thead th {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* Styling for the selected date */
+  .react-datepicker__day--selected {
+    background-color: #343a40 !important;
+    color: white !important;
+  }
+  
+  /* Styling for the date headers */
+  thead th {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* Styling for the form buttons */
+  .d-flex {
+    margin-top: 20px;
+  }
+  

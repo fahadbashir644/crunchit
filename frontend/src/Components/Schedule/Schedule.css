@@ -1,0 +1,124 @@
+/* SchedulePage.css */
+
+/* Styling for the table */
+.cstm-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: #000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cstm-table th,
+.cstm-table td {
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #222;
+  color: #ccc;
+}
+
+/* Styling for selected cells */
+.cstm-table td.selected {
+  background-color: #cf7507;
+  color: #000;
+}
+
+/* Styling for buttons */
+.btn {
+  margin-right: 10px;
+}
+
+/* Styling for form group */
+.cstm-form-group {
+  margin-bottom: 20px;
+}
+
+/* Styling for container */
+.cstm-container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* Styling for the header */
+.cstm-h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+/* Styling for the date picker */
+.react-datepicker {
+  width: 100%;
+}
+
+/* Styling for the date picker input */
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Styling for the hour cells */
+.hour-cell {
+  position: relative;
+  cursor: pointer;
+  background-color: #444;
+}
+
+/* Styling for the table headers */
+thead th {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Styling for the selected date */
+.react-datepicker__day--selected {
+  background-color: #cf7507 !important;
+  color: #000 !important;
+}
+
+/* Styling for the date headers */
+thead th {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Styling for the form buttons */
+.d-flex {
+  margin-top: 20px;
+}
+
+.cstm-row-flex {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cstm-col-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.orient-form-group {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .calendar-cont {
+    width: 100% !important;
+  }
+
+  .date-row {
+    width: 25%;
+  }
+
+  .time-row {
+    width: 35%;
+  }
+}
