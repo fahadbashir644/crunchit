@@ -12,7 +12,7 @@ const PendingRequests = () => {
     const data = {
         email: email
     }
-    axios.post("http://137.184.81.218/getPendingRequests", data).then((res) => {   
+    axios.post("http://localhost:8000/getPendingRequests", data).then((res) => {   
       if (res) {
         setSubscriptions(res.data.subscriptions);
       } 

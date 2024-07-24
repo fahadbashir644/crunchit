@@ -7,7 +7,7 @@ const CustomRequests = () => {
   const [hiringRequests, setHiringRequests] = useState([]);
 
   useEffect(() => {
-    axios.get("http://137.184.81.218/getCustomRequests").then((res) => {   
+    axios.get("http://localhost:8000/getCustomRequests").then((res) => {   
       if (res) {
         setHiringRequests(res.data.hiringRequests);
       } 

@@ -19,7 +19,7 @@ const Topup = () => {
   };
 
   const handleTopUp = () => {
-        axios.post("http://137.184.81.218/topup", {
+        axios.post("http://localhost:8000/topup", {
         header: { "Content-Type": "application/json" },
         data : JSON.stringify({
             price_amount: topup,

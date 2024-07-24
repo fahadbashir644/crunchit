@@ -6,7 +6,7 @@ const AdminDashboard = () => {
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://137.184.81.218/getActiveSubscriptions").then((res) => {   
+    axios.get("http://localhost:8000/getActiveSubscriptions").then((res) => {   
       if (res) {
         setActiveSubscriptions(res.data.subscriptions);
       } 

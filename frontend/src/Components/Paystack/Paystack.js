@@ -17,7 +17,7 @@ const Paystack = (params) => {
       user: email,
       balance: newBalance
     };
-    axios.post("http://137.184.81.218/addBalance", data).then((res) => {
+    axios.post("http://localhost:8000/addBalance", data).then((res) => {
       if (res) {
         setBalance(data.balance);
         toast.success('Balance added successfully');

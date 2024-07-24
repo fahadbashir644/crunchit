@@ -34,7 +34,7 @@ const PaymentPage = () => {
       const data = {
         email: email,
       };
-      axios.post("http://137.184.81.218/getbalance", data).then((res) => {   
+      axios.post("http://localhost:8000/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
         } 
@@ -63,7 +63,7 @@ const PaymentPage = () => {
       setIsLoading(true);
         if (totalPrice <= balance) {
           axios
-          .post("http://137.184.81.218/login", {
+          .post("http://localhost:8000/login", {
             header: { "Content-Type": "application/json" },
             data: {
               email: newEmail,
@@ -83,7 +83,7 @@ const PaymentPage = () => {
             workingHours: hours,
             timezone: selectedTimezone?.value
           };
-          axios.post("http://137.184.81.218/pay", data).then((res) => {   
+          axios.post("http://localhost:8000/pay", data).then((res) => {   
             if (res) {
                 setIsLoading(false);
                 toast.success('Payment Successful');

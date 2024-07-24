@@ -17,7 +17,7 @@ const CustomerSidebar = ({isActive, setIsActive}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const newSocket = io('http://137.184.81.218');
+        const newSocket = io('http://localhost:8000');
         setSocket(newSocket);
         return () => {
           newSocket.disconnect();
@@ -29,7 +29,7 @@ const CustomerSidebar = ({isActive, setIsActive}) => {
           const data = {
             email: email,
           };
-          axios.post("http://137.184.81.218/getbalance", data).then((res) => {   
+          axios.post("http://localhost:8000/getbalance", data).then((res) => {   
             if (res) {
                 setBalance(res.data.balance);
             } 

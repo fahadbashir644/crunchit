@@ -19,6 +19,7 @@ const Service = require("./Models/Service");
 const Transaction = require("./Models/Transaction");
 const bcrypt = require("bcrypt");
 const saltrounds = 2;
+require('dotenv').config();
 
 const socketIO = require('socket.io')(http, {
   cors: {
@@ -41,19 +42,20 @@ socketIO.on('connection', (socket) => {
   });
 });
 
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname,'public/build')));
+// // Serve static files from the frontend build directory
+// app.use(express.static(path.join(__dirname,'public/build')));
 
-// Handle all other requests by serving the frontend's index.html
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname + "public/index.html"));
-  });
+// // Handle all other requests by serving the frontend's index.html
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname + "public/index.html"));
+// });
 
 
 //db connection
 const connection_url =
   "mongodb+srv://dev2:Steady101@cluster0.rvvfg9c.mongodb.net/crunchit";
-connect(connection_url, {
+const mongoURI = process.env.MONGO_URI;
+connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
