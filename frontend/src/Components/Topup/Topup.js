@@ -19,13 +19,13 @@ const Topup = () => {
   };
 
   const handleTopUp = () => {
-        axios.post("http://localhost:8000/topup", {
+        axios.post("http://16.171.177.188:8000/topup", {
         header: { "Content-Type": "application/json" },
         data : JSON.stringify({
             price_amount: topup,
             price_currency: "usd",
             order_description: email,
-            ipn_callback_url: "http://localhost/ipn",
+            ipn_callback_url: "http://16.171.177.188/ipn",
             success_url: "https://nowpayments.io",
             cancel_url: "https://nowpayments.io"
             })

@@ -6,7 +6,7 @@ const CompletedProjects = () => {
   const [completedSubscriptions, setCompletedSubscriptions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/getCompletedSubscriptions").then((res) => {   
+    axios.get("http://16.171.177.188:8000/getCompletedSubscriptions").then((res) => {   
       if (res) {
         setCompletedSubscriptions(res.data.subscriptions);
       } 

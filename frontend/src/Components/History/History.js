@@ -12,7 +12,7 @@ const History = () => {
     const data = {
         email: email
     }
-    axios.post("http://localhost:8000/getSubscriptionsOfVa", data).then((res) => {   
+    axios.post("http://16.171.177.188:8000/getSubscriptionsOfVa", data).then((res) => {   
       if (res) {
         setSubscriptions(res.data.subscriptions);
       } 

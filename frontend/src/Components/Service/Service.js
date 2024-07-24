@@ -44,7 +44,7 @@ const {
 } = useHireContext();
 
 useEffect(() => {
-  axios.get("http://localhost:8000/getAllServices").then((res) => {   
+  axios.get("http://16.171.177.188:8000/getAllServices").then((res) => {   
     if (res) {
       setServices(res.data.services);
     } 

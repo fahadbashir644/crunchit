@@ -22,7 +22,7 @@ const LoginPage = () => {
     }
  
     axios
-    .post("http://localhost:8000/login", {
+    .post("http://16.171.177.188:8000/login", {
       header: { "Content-Type": "application/json" },
       data: {
         email: email,
