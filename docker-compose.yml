@@ -3,6 +3,7 @@ version: '3'
 services:
   backend:
     build: ./backend
+    image: fahadbashir644/crunchit:crunchit-backend
     ports:
       - "8000:8000"
     env_file:
@@ -10,6 +11,7 @@ services:
 
   frontend:
     build: ./frontend
+    image: fahadbashir644/crunchit:crunchit-frontend
     ports:
       - "3000:80"
     depends_on:
