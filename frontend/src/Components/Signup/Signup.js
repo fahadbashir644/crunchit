@@ -22,7 +22,7 @@ const SignupPage = () => {
       return;
     }
     axios
-    .post("http://16.171.177.188:8000/signup", {
+    .post("http://16.171.177.188:8088/signup", {
       header: { "Content-Type": "application/json" },
       data: {
         email: email,

@@ -5,7 +5,7 @@ services:
     build: ./backend
     image: fahadbashir644/crunchit:crunchit-backend
     ports:
-      - "8000:8000"
+      - "8088:8088"
     env_file:
       - ./backend/.env
 
@@ -13,6 +13,6 @@ services:
     build: ./frontend
     image: fahadbashir644/crunchit:crunchit-frontend
     ports:
-      - "3000:80"
+      - "88:88"
     depends_on:
       - backend

@@ -23,7 +23,7 @@ require('dotenv').config();
 
 const socketIO = require('socket.io')(http, {
   cors: {
-    origin: "http://137.184.81.218:3000"
+    origin: "http://16.171.177.188:88"
   }
 });
 
@@ -1137,5 +1137,5 @@ app.post("/addBalance", (req, res) => {
   });  
 });
 
-const PORT = 8000;
+const PORT = 8088;
 http.listen(PORT, () => console.log(`Listening on port ${PORT}`));

@@ -52,7 +52,7 @@ const CustomerDashboard = () => {
         const data = {
           email: email,
         };
-        axios.post("http://16.171.177.188:8000/getSubscriptionsOfUser", data).then((res) => {   
+        axios.post("http://16.171.177.188:8088/getSubscriptionsOfUser", data).then((res) => {   
           if (res) {
             setActiveSubscriptions(res.data.subscriptions);
           } 
@@ -142,7 +142,7 @@ const CustomerDashboard = () => {
       const data = {
         client: email,
       };
-      axios.post("http://16.171.177.188:8000/getRelatedVas", data).then((res) => {   
+      axios.post("http://16.171.177.188:8088/getRelatedVas", data).then((res) => {   
         if (res) {
             setUsers(res.data.users);
         } 
@@ -150,7 +150,7 @@ const CustomerDashboard = () => {
     }, [activeSubscriptions]);
 
   useEffect(() => {
-    const newSocket = io('http://16.171.177.188:8000');
+    const newSocket = io('http://16.171.177.188:8088');
     setSocket(newSocket);
 
     return () => {
@@ -171,7 +171,7 @@ const CustomerDashboard = () => {
       const data = {
         email: email,
       };
-      axios.post("http://16.171.177.188:8000/getbalance", data).then((res) => {   
+      axios.post("http://16.171.177.188:8088/getbalance", data).then((res) => {   
         if (res) {
             setBalance(res.data.balance);
             setTopup(0);

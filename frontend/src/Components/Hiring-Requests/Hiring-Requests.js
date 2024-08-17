@@ -8,13 +8,13 @@ const HiringRequests = () => {
   const [virtualAssistants, setVirtualAssistants] = useState([]);
 
   useEffect(() => {
-    axios.get("http://16.171.177.188:8000/getHiringRequests").then((res) => {   
+    axios.get("http://16.171.177.188:8088/getHiringRequests").then((res) => {   
       if (res) {
         setHiringRequests(res.data.hiringRequests);
       } 
     });
 
-    axios.get("http://16.171.177.188:8000/getAvailableVas").then((res) => {   
+    axios.get("http://16.171.177.188:8088/getAvailableVas").then((res) => {   
       if (res) {
         setVirtualAssistants(res.data.vas);
       } 
@@ -37,7 +37,7 @@ const HiringRequests = () => {
         va: selectedVaId,
         subscriptionId: requestId
       };
-      axios.post("http://16.171.177.188:8000/handleSubscription", data).then((res) => {   
+      axios.post("http://16.171.177.188:8088/handleSubscription", data).then((res) => {   
         if (res) {
           setHiringRequests((prevRequests) => prevRequests.filter(request => request._id !== requestId));
           toast.success('Successfully assigned VA')
