@@ -13,6 +13,6 @@ services:
     build: ./frontend
     image: fahadbashir644/crunchit:crunchit-frontend
     ports:
-      - "88:88"
+      - "3000:80"
     depends_on:
       - backend
